@@ -63,7 +63,7 @@
             <label class="mr-4 font-bold">Datum</label>
             <input
               class="border-2 rounded border-solid p-2 w-full"
-              v-model="invoice.date"
+              v-model="invoice.invoice_date"
               type="date"
               placeholder="automatisch"
             />
@@ -242,7 +242,7 @@ export default {
         },
         invoiceNumber: "",
         customerNumber: "",
-        date: "",
+        invoice_date: "",
         deliveryDate: "",
         invoiceTitle: "Rechnung",
         invoiceStartText:
@@ -346,18 +346,18 @@ export default {
     removeInvoicePosition(index) {
       this.invoice.invoicePositions.splice(index, 1);
     },
-    calculatePaymentDate(date, days) {
-      const dateObj = new Date(date);
+    calculatePaymentDate(invoice_date, days) {
+      const dateObj = new Date(invoice_date);
       dateObj.setDate(dateObj.getDate() + days);
       return dateObj.toLocaleDateString("de-DE");
     },
   },
   mounted() {
-    this.invoice.date = new Date().toISOString().slice(0, 10);
+    this.invoice.invoice_date = new Date().toISOString().slice(0, 10);
     this.invoice.deliveryDate = new Date().toISOString().slice(0, 10);
 
     this.invoice.paymentCondition = `Zahlbar innerhalb von 14 Tagen nach Rechnungsdatum (Zahlungsziel: ${this.calculatePaymentDate(
-      this.invoice.date,
+      this.invoice.invoice_date,
       14
     )})`;
   },
