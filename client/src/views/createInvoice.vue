@@ -125,7 +125,7 @@
             :id="index"
             class="hover:bg-gray-100 border-b-2 border-gray-100"
             draggable="true"
-            @input="updatePosition(index)"
+            @change="updatePosition(index)"
           >
             <td class="py-4">
               <img src="./../assets/drag.svg" width="20" alt="drag" />
@@ -192,17 +192,12 @@
         <div
           class="col-start-8 col-end-13 border-solid border-2 border-gray-200 rounded my-4"
         >
-          <div class="flex justify-between p-2">
-            <label>Zwischensumme Netto</label>
-            {{ subTotalNet }} €
+          <div class="flex justify-between bg-gray-200 px-2 pt-2">
+            <p class="text-lg font-bold">Gesamtbetrag</p>
+            <p class="text-lg font-bold">{{ total }} €</p>
           </div>
-          <div class="flex justify-between p-2">
-            <label>USt 19%</label>
-            {{ taxTotal }} €
-          </div>
-          <div class="flex justify-between bg-gray-200 p-2">
-            <label>Gesamtbetrag</label>
-            {{ total }} €
+          <div class="flex justify-between bg-gray-200 pb-2 pl-2">
+            <p>enthält USt 19% ({{ taxTotal }} €)</p>
           </div>
         </div>
       </div>
@@ -311,22 +306,21 @@ export default {
     };
   },
   computed: {
-    subTotalNet() {
-      //berechnet die Zwischensumme
-      return this.invoice.invoicePositions.reduce(
-        (acc, cur) => acc + cur.amount,
-        0
-      );
-    },
     taxTotal() {
-      //berechnet 19% umsatzsteuer von der Zwischensumme
-      return (this.subTotalNet * 0.19).toFixed(2);
+      return this.invoice.invoicePositions
+        .reduce(
+          (acc, cur) =>
+            parseInt(acc) +
+            ((parseInt(cur.amount) / (100 + parseInt(cur.tax))) *
+              parseInt(cur.tax)),
+          0
+        )
+        .toFixed(2);
     },
     total() {
-      return this.invoice.invoicePositions.reduce(
-        (acc, cur) => acc + cur.amount * (1 + cur.tax / 100),
-        0
-      );
+      return this.invoice.invoicePositions
+        .reduce((acc, cur) => parseInt(acc) + parseInt(cur.amount), 0)
+        .toFixed(2);
     },
   },
   methods: {
