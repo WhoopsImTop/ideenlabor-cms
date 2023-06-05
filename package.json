@@ -1,21 +1,22 @@
 {
-    "private": true,
-    "type": "module",
-    "scripts": {
-        "dev": "vite",
-        "build": "vite build"
-    },
-    "devDependencies": {
-        "@inertiajs/vue3": "^1.0.0",
-        "@tailwindcss/forms": "^0.5.2",
-        "@tailwindcss/typography": "^0.5.2",
-        "@vitejs/plugin-vue": "^4.0.0",
-        "autoprefixer": "^10.4.7",
-        "axios": "^1.1.2",
-        "laravel-vite-plugin": "^0.7.5",
-        "postcss": "^8.4.14",
-        "tailwindcss": "^3.1.0",
-        "vite": "^4.0.0",
-        "vue": "^3.2.31"
-    }
+  "name": "ideenlabor-cms",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "vue": "^3.2.47",
+    "vue-router": "^4.2.2"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.1.0",
+    "autoprefixer": "^10.4.14",
+    "postcss": "^8.4.24",
+    "tailwindcss": "^3.3.2",
+    "vite": "^4.3.9"
+  }
 }
