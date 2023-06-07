@@ -1,0 +1,35 @@
+[
+  {
+    "label": "Reihe",
+    "type": "row",
+    "content": [],
+    "layout": "1"
+  },
+  {
+    "label": "Bild",
+    "type": "image",
+    "content": {
+      "src": "https://placehold.it/350x150",
+      "alt": "Placeholder"
+    }
+  },
+  {
+    "label": "Text",
+    "type": "text",
+    "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam euismod, nisl eget aliquam ultricies, nunc nisl aliquet nunc, quis ali"
+  },
+  {
+    "label": "Überschrift",
+    "type": "headline",
+    "options": ["h1", "h2", "h3", "h4", "h5", "h6"],
+    "content": "Überschrift"
+  },
+  {
+    "label": "Button",
+    "type": "button",
+    "content": {
+        "text": "Button",
+        "link": "https://www.google.de"
+    }
+  }
+]

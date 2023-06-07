@@ -104,7 +104,7 @@
       </div>
     </div>
     <div class="bg-white p-4 rounded shadow my-2">
-      <h3>Belegpositionen (Brutto)</h3>
+      <h3>Belegpositionen (Netto)</h3>
       <table class="divide-y divide-gray-300 w-full mt-4" id="invoiceTable">
         <thead class="bg-gray-200">
           <tr>
@@ -169,10 +169,14 @@
               />
             </td>
             <td>
-              <input
-                class="rounded px-2 py-2 text-right"
-                v-model="position.amount"
-              />
+              <p class="font-bold">
+                {{
+                  new Intl.NumberFormat("de-DE", {
+                    style: "currency",
+                    currency: "EUR",
+                  }).format(position.amount)
+                }}
+              </p>
             </td>
             <td @click="removeInvoicePosition(index)">
               <img src="./../assets/close.svg" width="20" alt="delete" />
@@ -189,15 +193,45 @@
             Position hinzufügen
           </button>
         </div>
-        <div
-          class="col-start-8 col-end-13 border-solid border-2 border-gray-200 rounded my-4"
-        >
-          <div class="flex justify-between bg-gray-200 px-2 pt-2">
-            <p class="text-lg font-bold">Gesamtbetrag</p>
-            <p class="text-lg font-bold">{{ total }} €</p>
+        <div class="col-start-8 col-end-13 border-solid border-2 rounded my-4">
+          <div class="flex flex-col px-2 pt-2">
+            <div class="flex justify-between pb-2">
+              <p>Zwischensumme:</p>
+              <p>
+                {{
+                  new Intl.NumberFormat("de-DE", {
+                    style: "currency",
+                    currency: "EUR",
+                  }).format(total)
+                }}
+              </p>
+            </div>
           </div>
-          <div class="flex justify-between bg-gray-200 pb-2 pl-2">
-            <p>enthält USt 19% ({{ taxTotal }} €)</p>
+          <div class="flex flex-col px-2 pt-2">
+            <div class="flex justify-between pb-2">
+              <p>zuzüglich USt 19%</p>
+              <p>
+                {{
+                  new Intl.NumberFormat("de-DE", {
+                    style: "currency",
+                    currency: "EUR",
+                  }).format(taxTotal)
+                }}
+              </p>
+            </div>
+          </div>
+          <div
+            class="flex justify-between border-gray-200 bg-gray-200 py-2 px-2"
+          >
+            <p class="text-lg font-bold">Gesamtbetrag</p>
+            <p class="text-lg font-bold">
+              {{
+                new Intl.NumberFormat("de-DE", {
+                  style: "currency",
+                  currency: "EUR",
+                }).format(totalWithTax)
+              }}
+            </p>
           </div>
         </div>
       </div>
@@ -307,30 +341,38 @@ export default {
   },
   computed: {
     taxTotal() {
-      return this.invoice.invoicePositions
-        .reduce(
-          (acc, cur) =>
-            parseInt(acc) +
-            ((parseInt(cur.amount) / (100 + parseInt(cur.tax))) *
-              parseInt(cur.tax)),
+      return (
+        this.invoice.invoicePositions.reduce(
+          (acc, cur) => parseFloat(acc) + parseFloat(cur.amount),
           0
-        )
-        .toFixed(2);
+        ) * 0.19
+      );
     },
     total() {
-      return this.invoice.invoicePositions
-        .reduce((acc, cur) => parseInt(acc) + parseInt(cur.amount), 0)
-        .toFixed(2);
+      return this.invoice.invoicePositions.reduce(
+        (acc, cur) => parseFloat(acc) + parseFloat(cur.amount),
+        0
+      );
+    },
+    totalWithTax() {
+      return (
+        this.invoice.invoicePositions.reduce(
+          (acc, cur) => parseFloat(acc) + parseFloat(cur.amount),
+          0
+        ) +
+        this.invoice.invoicePositions.reduce(
+          (acc, cur) => parseFloat(acc) + parseFloat(cur.amount),
+          0
+        ) *
+          0.19
+      );
     },
   },
   methods: {
     updatePosition(index) {
       const position = this.invoice.invoicePositions[index];
-      position.amount = (
-        position.quantity *
-        position.price *
-        (1 - position.discount / 100)
-      ).toFixed(2);
+      position.amount =
+        position.quantity * position.price * (1 - position.discount / 100);
     },
     AddInvoiceEntry() {
       this.invoice.invoicePositions.push({

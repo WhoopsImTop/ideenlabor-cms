@@ -2,63 +2,44 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\invoice;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreinvoiceRequest;
-use App\Http\Requests\UpdateinvoiceRequest;
-use App\Http\Resources\invoiceResource;
+use Illuminate\Http\Request;
+use App\Models\Invoice;
+use App\Models\Customer;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class InvoiceController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        return invoiceResource::collection(invoice::all());
+        return Invoice::all();
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreinvoiceRequest $request)
+    public function store(Request $request)
     {
+        $invoice_number = 'RE' . '-' . substr(date('Y'), 2) . '-' . str_pad(Invoice::whereYear('created_at', date('Y'))->count() + 1, 3, '0', STR_PAD_LEFT);
+        $request->merge(['invoice_number' => $invoice_number]);
+
+        //convert invoice_positions to json_string
+        $invoice_positions = json_encode($request->invoice_positions);
+        $request->merge(['invoice_positions' => $invoice_positions]);
+
         //create invoice
-        $invoice = invoice::create($request->validated());
+        $invoice = Invoice::create($request->all());
 
-        //return invoice
-        return new invoice($invoice);
-    }
+        //create pdf
+        $pdf = Pdf::loadView('index', compact('invoice'));
+        //save the pdf to storage invoice/year/month/customer_name/invoice_number.pdf
+        $customer = Customer::where('customer_number', $invoice->customer_number)->first();
+        //create directory if not exists
+        $public_folder_path = 'invoice/' . date('Y') . '/' . date('m') . '/' . $customer->customer_name;
+        if (!file_exists($public_folder_path)) {
+            mkdir($public_folder_path, 0777, true);
+        }
+        $pdf->save('invoice/' . date('Y') . '/' . date('m') . '/' . $customer->customer_name . '/' . $invoice->invoice_number . '.pdf');
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(invoice $invoice)
-    {
-        //
-    }
+        //add filepath to invoice
+        $invoice->update(['invoice_path' => 'invoice/' . date('Y') . '/' . date('m') . '/' . $customer->customer_name . '/' . $invoice->invoice_number . '.pdf']);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateinvoiceRequest $request, invoice $invoice)
-    {
-        //update invoice
-        $invoice->update($request->validated());
-
-        //return invoice
-        return new invoice($invoice);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(invoice $invoice)
-    {
-        //delete invoice
-        $invoice->delete();
-
-        //return invoice
-        return new invoice($invoice);
+        return response()->json($invoice, 201);
     }
 }

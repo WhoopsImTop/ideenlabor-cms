@@ -15,12 +15,13 @@ return new class extends Migration
             $table->id();
             $table->string('customer_number')->unique();
             $table->string('customer_name');
-            $table->string('customer_address');
-            $table->string('customer_zip');
-            $table->string('customer_city');
-            $table->string('customer_country');
-            $table->string('customer_phone');
-            $table->string('customer_email');
+            $table->string('customer_address')->nullable();
+            $table->string('customer_street')->nullable();
+            $table->string('customer_zip')->nullable();
+            $table->string('customer_city')->nullable();
+            $table->string('customer_country')->nullable();
+            $table->string('customer_phone')->nullable();
+            $table->string('customer_email')->nullable();
             $table->timestamps();
         });
     }
