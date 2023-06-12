@@ -6,12 +6,13 @@ use Illuminate\Http\Request;
 use App\Models\Invoice;
 use App\Models\Customer;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Http\Resources\InvoiceResource;
 
 class InvoiceController extends Controller
 {
     public function index()
     {
-        return Invoice::all();
+        return InvoiceResource::collection(Invoice::all());
     }
 
     public function store(Request $request)
@@ -40,6 +41,31 @@ class InvoiceController extends Controller
         //add filepath to invoice
         $invoice->update(['invoice_path' => 'invoice/' . date('Y') . '/' . date('m') . '/' . $customer->customer_name . '/' . $invoice->invoice_number . '.pdf']);
 
-        return response()->json($invoice, 201);
+        //relate invoice to customer
+        $customer->invoices()->save($invoice);
+
+        //relate customer to invoice
+        $invoice->customer()->associate($customer)->save();
+
+        return new InvoiceResource($invoice);
+    }
+
+    public function show(Invoice $invoice)
+    {
+        return $invoice;
+    }
+
+    public function update(Request $request, Invoice $invoice)
+    {
+        $invoice->update($request->all());
+
+        return new InvoiceResource($invoice);
+    }
+
+    public function destroy(Invoice $invoice)
+    {
+        $invoice->delete();
+
+        return response()->json(null, 204);
     }
 }

@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use App\Http\Resources\CustomerResource;
 
 class CustomerController extends Controller
 {
     public function index()
     {
-        return Customer::all();
+        return CustomerResource::collection(Customer::all());
     }
 
     public function store(Request $request)
@@ -18,7 +19,7 @@ class CustomerController extends Controller
         $customer_number = 'C' . 1000 + Customer::max('id') + 1;
         $request->merge(['customer_number' => $customer_number]);
 
-        return Customer::create($request->all());
+        return new CustomerResource(Customer::create($request->all()));
     }
 
     public function update(Request $request, Customer $customer)

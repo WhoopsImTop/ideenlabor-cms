@@ -2,7 +2,11 @@
   <div>
     <div class="flex justify-between">
       <h1>Rechnungen</h1>
-      <router-link class="btn px-4 py-2 rounded bg-blue-600 text-white" to="/create-invoice">Neue Rechnung</router-link>
+      <router-link
+        class="btn px-4 py-2 rounded bg-blue-600 text-white"
+        to="/create-invoice"
+        >Neue Rechnung</router-link
+      >
     </div>
     <div class="mt-10 grid grid-cols-6">
       <div :class="tableActions ? ' col-span-4' : 'col-span-6'">
@@ -28,27 +32,27 @@
               <td
                 class="px-6 py-4 whitespace-nowrap text-sm font-medium text-black"
               >
-                {{ invoice.invoiceNumber }}
+                {{ invoice.invoice_number }}
               </td>
               <td
                 class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-black"
               >
-                {{ invoice.customer }}
+                {{ invoice.customer.customer_name }}
               </td>
               <td
                 class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-black"
               >
-                {{ invoice.invoiceDate }}
+                {{ invoice.invoice_date }}
               </td>
               <td
                 class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-black"
               >
-                {{ invoice.dueDate }}
+                {{ invoice.invoice_due_date }}
               </td>
               <td
                 class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-black"
               >
-                {{ invoice.amount }}
+                {{ invoice.invoice_total }}
               </td>
               <td
                 class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-black"
@@ -83,7 +87,9 @@
             <img width="20" src="../assets/delete.svg" alt="delete" />
           </div>
         </div>
-        <div class="invoicePreview bg-gray-300 rounded m-4 flex h-32"></div>
+        <div class="invoicePreview bg-gray-300 rounded m-4 flex h-32">
+          <iframe width="100%" height="100%" frameborder="0" :src="'http://127.0.0.1:8000/' + activeInvoice.invoice_path"></iframe>
+        </div>
         <div class="flex flex-col p-4">
           <span class="text-right"
             >Erstellt am
@@ -112,6 +118,7 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
   name: "invoices",
   data() {
@@ -151,26 +158,7 @@ export default {
           key: "status",
         },
       ],
-      tableInvoiceData: [
-        {
-          invoiceNumber: "2021-0001",
-          customer: "Max Mustermann",
-          invoiceDate: "01.01.2021",
-          mailDate: "01.01.2021",
-          dueDate: "01.02.2021",
-          amount: "1000,00 €",
-          status: "offen",
-        },
-        {
-          invoiceNumber: "2021-0002",
-          customer: "Max Mustermann",
-          invoiceDate: "01.01.2021",
-          mailDate: "03.01.2021",
-          dueDate: "01.02.2021",
-          amount: "1000,00 €",
-          status: "offen",
-        },
-      ],
+      tableInvoiceData: [],
     };
   },
   methods: {
@@ -178,6 +166,16 @@ export default {
       this.tableActions = true;
       this.activeInvoice = invoice;
     },
+  },
+  beforeMount() {
+    axios
+      .get("http://127.0.0.1:8000/api/invoices")
+      .then((response) => {
+        this.tableInvoiceData = response.data.data;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   },
 };
 </script>

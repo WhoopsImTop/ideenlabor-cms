@@ -27,7 +27,9 @@
     </div>
     <div class="bg-white p-4 rounded shadow my-2">
       <h3>Seiteninhalt</h3>
-      <builderComponentRenderer></builderComponentRenderer>
+      <builderComponentRenderer
+        :pageContent="site.pageContent"
+      ></builderComponentRenderer>
     </div>
     <div class="bg-white p-4 rounded shadow my-2">
       <h3>Aktionen</h3>
@@ -35,7 +37,10 @@
         <button class="btn px-4 py-2 rounded bg-gray-300 text-white mr-2">
           Abbrechen
         </button>
-        <button class="btn px-4 py-2 rounded bg-blue-600 text-white">
+        <button
+          class="btn px-4 py-2 rounded bg-blue-600 text-white"
+          @click="savePageData"
+        >
           Speichern
         </button>
       </div>
@@ -56,17 +61,36 @@ export default {
           description: "",
           keywords: "",
         },
-        content: [
-          {
-            type: "text",
-            content: "",
-          },
-        ],
+        pageContent: {
+          components: [
+            {
+              type: "row",
+              label: "Reihe",
+              component: [
+                {
+                  type: "col",
+                  label: "Spalte",
+                  components: [],
+                },
+                {
+                  type: "col",
+                  label: "Spalte",
+                  components: [],
+                },
+              ],
+            },
+          ],
+        },
       },
     };
   },
   components: {
     builderComponentRenderer,
+  },
+  methods: {
+    savePageData() {
+      console.log(this.site);
+    },
   },
 };
 </script>

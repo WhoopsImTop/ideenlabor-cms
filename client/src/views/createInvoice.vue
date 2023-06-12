@@ -6,22 +6,19 @@
       <div class="grid grid-cols-2 gap-16 py-4">
         <div class="col-span-1">
           <div class="flex flex-col">
-            <select class="border-2 rounded border-solid p-2">
-              <option>Kunde Suchen oder erfassen</option>
-              <option>2</option>
-            </select>
+            <customer-search-component @customerSelected="setCutomerData" />
           </div>
           <div class="flex flex-col my-2">
             <input
               class="border-2 rounded border-solid p-2"
-              v-model="invoice.customer.address"
+              v-model="customer.customer_address"
               placeholder="Adresszusatz"
             />
           </div>
           <div class="flex flex-col my-2">
             <input
               class="border-2 rounded border-solid p-2"
-              v-model="invoice.customer.street"
+              v-model="customer.customer_street"
               placeholder="Straße"
             />
           </div>
@@ -29,14 +26,14 @@
             <div class="flex flex-col col-span-2">
               <input
                 class="border-2 rounded border-solid p-2"
-                v-model="invoice.customer.zip"
+                v-model="customer.customer_zip"
                 placeholder="Plz"
               />
             </div>
             <div class="flex flex-col col-span-4">
               <input
                 class="border-2 rounded border-solid p-2"
-                v-model="invoice.customer.city"
+                v-model="customer.customer_city"
                 placeholder="Ort"
               />
             </div>
@@ -47,7 +44,7 @@
             <label class="mr-4 font-bold">Rechnungsnummer</label>
             <input
               class="border-2 rounded border-solid p-2 w-full"
-              v-model="invoice.invoiceNumber"
+              v-model="invoice.invoice_number"
               placeholder="automatisch"
             />
           </div>
@@ -55,12 +52,12 @@
             <label class="mr-4 font-bold">Kundennummer</label>
             <input
               class="border-2 rounded border-solid p-2 w-full"
-              v-model="invoice.customerNumber"
+              v-model="invoice.customer_number"
               placeholder="automatisch"
             />
           </div>
           <div class="flex items-center my-2">
-            <label class="mr-4 font-bold">Datum</label>
+            <label class="mr-4 font-bold">Rechnungsdatum</label>
             <input
               class="border-2 rounded border-solid p-2 w-full"
               v-model="invoice.invoice_date"
@@ -69,10 +66,16 @@
             />
           </div>
           <div class="flex items-center my-2">
-            <label class="mr-4 font-bold">Lieferdatum</label>
+            <label class="mr-4 font-bold">Leistungszeitraum</label>
+            <input
+              class="border-2 rounded border-solid p-2 w-full mr-3"
+              v-model="leistungszeitraumStart"
+              type="date"
+              placeholder="automatisch"
+            />
             <input
               class="border-2 rounded border-solid p-2 w-full"
-              v-model="invoice.deliveryDate"
+              v-model="leistungszeitraumEnde"
               type="date"
               placeholder="automatisch"
             />
@@ -88,7 +91,7 @@
             <label>Belegtitel</label>
             <input
               class="border-2 rounded border-solid p-2"
-              v-model="invoice.invoiceTitle"
+              v-model="invoice.invoice_title"
               placeholder="Rechnungstitel"
             />
           </div>
@@ -96,7 +99,7 @@
             <label>Einleitungstext</label>
             <input
               class="border-2 rounded border-solid p-2"
-              v-model="invoice.invoiceStartText"
+              v-model="invoice.invoice_start_text"
               placeholder="Rechnungstitel"
             />
           </div>
@@ -120,7 +123,7 @@
         </thead>
         <tbody>
           <tr
-            v-for="(position, index) in invoice.invoicePositions"
+            v-for="(position, index) in invoice.invoice_positions"
             :key="position"
             :id="index"
             class="hover:bg-gray-100 border-b-2 border-gray-100"
@@ -257,31 +260,58 @@
         </div>
       </div>
     </div>
+    <div class="bg-white p-4 rounded shadow my-2">
+      <h3>Rechnungsstellung</h3>
+      <div class="py-4">
+        <button
+          class="btn px-4 py-2 rounded bg-gray-200 mr-3"
+          @click="saveAsDraft"
+        >
+          Entwurf speichern
+        </button>
+        <button
+          class="btn px-4 py-2 rounded bg-blue-600 text-white"
+          @click="generateInvoice"
+        >
+          Rechnung erstellen
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import axios from "axios";
+import CustomerSearchComponent from "../components/customerSearchComponent.vue";
 export default {
   name: "createInvoice",
+  components: {
+    CustomerSearchComponent,
+  },
   props: {},
   data() {
     return {
+      leistungszeitraumStart: "",
+      leistungszeitraumEnde: "",
+      customer: {
+        customer_name: "",
+        customer_address: "",
+        customer_street: "",
+        customer_zip: "",
+        customer_city: "",
+        customer_number: "",
+        customer_email: "",
+      },
       invoice: {
-        customer: {
-          name: "",
-          address: "",
-          street: "",
-          zip: "",
-          city: "",
-        },
-        invoiceNumber: "",
-        customerNumber: "",
+        customer_id: "",
+        invoice_number: "",
+        customer_number: "",
         invoice_date: "",
-        deliveryDate: "",
-        invoiceTitle: "Rechnung",
-        invoiceStartText:
+        delivery_date: "",
+        invoice_title: "Rechnung",
+        invoice_start_text:
           "Unsere Lieferungen/Lieferung stellen wir Ihnen wie folgt in Rechnung:",
-        invoicePositions: [
+        invoice_positions: [
           {
             position: "",
             quantity: 1,
@@ -292,8 +322,8 @@ export default {
             amount: 0.0,
           },
         ],
-        paymentCondition: "",
-        afterword: "Vielen Dank für die gute Zusammenarbeit.",
+        invoice_payment_condition: "",
+        invoice_afterword: "Vielen Dank für die gute Zusammenarbeit.",
       },
       invoiceTableHeader: {
         drag: {
@@ -342,25 +372,25 @@ export default {
   computed: {
     taxTotal() {
       return (
-        this.invoice.invoicePositions.reduce(
+        this.invoice.invoice_positions.reduce(
           (acc, cur) => parseFloat(acc) + parseFloat(cur.amount),
           0
         ) * 0.19
       );
     },
     total() {
-      return this.invoice.invoicePositions.reduce(
+      return this.invoice.invoice_positions.reduce(
         (acc, cur) => parseFloat(acc) + parseFloat(cur.amount),
         0
       );
     },
     totalWithTax() {
       return (
-        this.invoice.invoicePositions.reduce(
+        this.invoice.invoice_positions.reduce(
           (acc, cur) => parseFloat(acc) + parseFloat(cur.amount),
           0
         ) +
-        this.invoice.invoicePositions.reduce(
+        this.invoice.invoice_positions.reduce(
           (acc, cur) => parseFloat(acc) + parseFloat(cur.amount),
           0
         ) *
@@ -369,13 +399,47 @@ export default {
     },
   },
   methods: {
+    saveAsDraft() {
+      this.invoice.status = "entwurf";
+      this.invoice.total = this.total;
+      console.log(this.invoice.customer_number);
+      axios
+        .post("http://127.0.0.1:8000/api/invoices", {
+          invoice: this.invoice,
+        })
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    generateInvoice() {
+      this.invoice.status = "offen";
+      this.invoice.total = this.total;
+      axios
+        .post("http://127.0.0.1:8000/api/invoices", {
+          invoice: this.invoice,
+        })
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    setCutomerData(customer) {
+      this.customer = customer;
+      this.invoice.customer_number = customer.customer_number;
+      this.invoice.customer_id = customer.id;
+    },
     updatePosition(index) {
-      const position = this.invoice.invoicePositions[index];
+      const position = this.invoice.invoice_positions[index];
       position.amount =
         position.quantity * position.price * (1 - position.discount / 100);
     },
     AddInvoiceEntry() {
-      this.invoice.invoicePositions.push({
+      this.invoice.invoice_positions.push({
         position: "",
         quantity: 1,
         unit: "Stunde",
@@ -386,7 +450,7 @@ export default {
       });
     },
     removeInvoicePosition(index) {
-      this.invoice.invoicePositions.splice(index, 1);
+      this.invoice.invoice_positions.splice(index, 1);
     },
     calculatePaymentDate(invoice_date, days) {
       const dateObj = new Date(invoice_date);
@@ -396,7 +460,9 @@ export default {
   },
   mounted() {
     this.invoice.invoice_date = new Date().toISOString().slice(0, 10);
-    this.invoice.deliveryDate = new Date().toISOString().slice(0, 10);
+    this.invoice.delivery_date = new Date().toISOString().slice(0, 10);
+    this.leistungszeitraumStart = new Date().toISOString().slice(0, 10);
+    this.leistungszeitraumEnde = new Date().toISOString().slice(0, 10);
 
     this.invoice.paymentCondition = `Zahlbar innerhalb von 14 Tagen nach Rechnungsdatum (Zahlungsziel: ${this.calculatePaymentDate(
       this.invoice.invoice_date,

@@ -1,16 +1,15 @@
 <template>
   <div>
-    <div class="useablecompontentRow flex items-center">
-      <div
-        v-for="(component, index) in useableComponents"
-        :key="component.type"
-        :id="index"
-        class="useable-component mx-1 px-4 py-2 border-2 border-gray-200 rounded bg-gray-50"
-        draggable="true"
-      >
-        <h3>{{ component.label }}</h3>
-      </div>
-    </div>
+    <component-edit-drawer
+      v-if="ComponentDrawer"
+      :component="currentComponentToEdit"
+      @closeEditDialog="ComponentDrawer = false"
+    ></component-edit-drawer>
+    <componentsDrawer
+      v-if="showComponentsDrawer"
+      @closeComponentDrawer="unsetComponentsDrawer"
+      @addComponentToRow="addComponentFromDrawer"
+    ></componentsDrawer>
     <component
       v-for="(component, index) in pageContent.components"
       :key="index"
@@ -18,6 +17,9 @@
       :component="component"
       :index="index"
       @removeRow="removeRow"
+      @triggerComponentsDrawer="setComponentsDrawer"
+      @triggerComponentEdit="showComponentDrawer"
+      
     ></component>
     <button class="py-1 px-2 bg-gray-200 rounded" @click="addRow">
       Reihe hinzufügen
@@ -28,25 +30,53 @@
 <script>
 import useableComponents from "../template/components.json";
 import row from "./builderPlugins/rowPlugin.vue";
+import componentsDrawer from "./builderPlugins/componentsDrawer.vue";
+import componentEditDrawer from "./builderPlugins/componentEditDrawer.vue";
 export default {
+  props: {
+    pageContent: {
+      type: Object,
+      required: true,
+    },
+  },
   data() {
     return {
       useableComponents: useableComponents,
-      pageContent: {
-        components: [
-          {
-            type: "row",
-            label: "Reihe",
-            components: []
-          },
-        ],
-      },
+      showComponentsDrawer: false,
+      rowIndex: 0,
+      componentIndex: 0,
+      ComponentDrawer: false,
+      currentComponentToEdit: null,
+      pageContent: this.pageContent,
     };
   },
   components: {
     row,
+    componentsDrawer,
+    componentEditDrawer,
   },
   methods: {
+    setComponentsDrawer(componentIndex, index) {
+      this.componentIndex = componentIndex;
+      this.rowIndex = index;
+      this.showComponentsDrawer = true;
+    },
+    unsetComponentsDrawer() {
+      this.rowIndex = 0;
+      this.componentIndex = 0;
+      this.currentComponentToEdit = null;
+      this.showComponentsDrawer = false;
+    },
+    addComponentFromDrawer(component) {
+      this.pageContent.components[this.rowIndex].component[this.componentIndex].components.push(component);
+      this.unsetComponentsDrawer();
+      this.showComponentDrawer(component);
+    },
+    showComponentDrawer(component) {
+      this.ComponentDrawer = true;
+      console.log(component);
+      this.currentComponentToEdit = component;
+    },
     removeRow(index) {
       this.pageContent.components.splice(index, 1);
       //if the last row is removed, add a new one
@@ -58,7 +88,13 @@ export default {
       this.pageContent.components.push({
         type: "row",
         label: "Reihe",
-        layout: "col",
+        component: [
+          {
+            type: "col",
+            label: "Spalte",
+            components: [],
+          }
+        ],
       });
     },
   },

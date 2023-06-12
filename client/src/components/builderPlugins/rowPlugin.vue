@@ -2,14 +2,10 @@
   <div class="builder-element">
     <div class="builder-element-heading">
       <h3>{{ component.label }}</h3>
-      <div class="layout-options">
-        <select v-model="rowLayout">
-          <option value="col">1 Spalte</option>
-          <option value="col col">2 Spalten</option>
-          <option value="col col col">3 Spalten</option>
-          <option value="col col col col">4 Spalten</option>
-        </select>
-      </div>
+      <select v-model="cols" @change="updateCols()">
+        <option>Spaltenanzahl ändern</option>
+        <option v-for="n in 6" :key="n" :value="n">{{ n }} Spalten</option>
+      </select>
       <div class="heading-actions">
         <button @click="removeRow()">
           <img width="20" src="../../assets/delete.svg" alt="Preview" />
@@ -19,9 +15,24 @@
     <div class="builder-element-drapable-zone" :style="generatedLayout">
       <div
         class="dropable-column"
-        v-for="col in layoutCoulmns"
+        v-for="(col, i) in component.component"
         :key="col"
-      ></div>
+      >
+        <div
+          class="component flex align-center justify-between"
+          v-for="(component, index) in col.components"
+          v-show="component.label"
+          :key="index"
+        >
+          {{ component.label }}
+          <div class="editBtn" @click="triggerComponentEdit(component)">
+            <img src="../../assets/edit.svg" width="20" alt="edit" />
+          </div>
+        </div>
+        <div class="addBtn" @click="triggerComponentsDrawer(i, index)">
+          <img src="../../assets/add.svg" width="25" alt="add" />
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -44,77 +55,67 @@ export default {
   data() {
     return {
       component: this.component,
-      components: [],
-      rowLayout: this.component.layout || "col",
       useableComponents: useableComponents,
+      index: this.index,
+      componentIndex: null,
+      cols: 0,
     };
   },
 
   computed: {
     generatedLayout() {
       //return grid-template-areas based on rowLayout as string
-      return {
-        gridTemplateAreas: `"${this.rowLayout}"`,
-      };
-    },
-    layoutCoulmns() {
       //return number of columns based on rowLayout as string
-      return this.rowLayout.split(" ").length;
-    },
-  },
-
-  watch: {
-    rowLayout() {
-      //update the layout of the row
-      this.handleDropableZones();
+      let cols = "";
+      for (let i = 0; i < this.component.component.length; i++) {
+        cols += "col ";
+      }
+      return {
+        gridTemplateAreas: `"${cols}"`,
+      };
     },
   },
 
   methods: {
+    updateCols() {
+      //update rowLayout based on number of columns
+      let newLayout = [];
+      for (let i = 0; i < this.cols; i++) {
+        newLayout.push({
+          type: "col",
+          label: "Spalte",
+          components: [].concat(this.component.component[i]?.components || []),
+        });
+      }
+      this.component.component = newLayout;
+    },
     getData() {
       return this.component;
     },
     removeRow() {
       this.$emit("removeRow", this.index);
     },
-    handleDropableZones() {
-      console.log("handleDropableZones");
-      setTimeout(() => {
-        const columns = document.querySelectorAll(".dropable-column");
-
-        //drag and drop for columns
-        columns.forEach((column) => {
-          column.addEventListener("dragover", (e) => {
-            e.preventDefault();
-            //get id from dragged component
-            const draggedComponentId =
-              document.querySelector(".dragging").id;
-            //find element by index in useableComponents
-            const draggedComponent = this.useableComponents[draggedComponentId];
-            console.log(draggedComponent);
-            //create a new element
-            const newElement = document.createElement("div");
-            newElement.innerText = draggedComponent.label;
-            //add the new element to the column
-            column.appendChild(newElement);
-
-            this.components.push({
-              type: draggedComponent.type,
-              label: draggedComponent.label,
-              component: draggedComponent,
-            });
-          });
-          column.addEventListener("dragleave", (e) => {
-            e.preventDefault();
-            //remove the dragged component from the column
-            column.removeChild(document.querySelector(".dragging"));
-          });
-        });
-      }, 200);
+    triggerComponentsDrawer(componentIndex, index) {
+      this.$emit("triggerComponentsDrawer", componentIndex, index);
+    },
+    triggerComponentEdit(component) {
+      this.$emit("triggerComponentEdit", component);
     },
   },
 };
 </script>
 
 <style>
+.addBtn {
+  background-color: #000;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.2);
+  margin: 10px auto 10px;
+}
 </style>
