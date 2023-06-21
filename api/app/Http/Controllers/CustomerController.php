@@ -16,7 +16,7 @@ class CustomerController extends Controller
     public function store(Request $request)
     {
         //generate customer number that auto increments starting from 1000
-        $customer_number = 'C' . 1000 + Customer::max('id') + 1;
+        $customer_number = 'C' . 10000 + Customer::max('id') + 1;
         $request->merge(['customer_number' => $customer_number]);
 
         return new CustomerResource(Customer::create($request->all()));

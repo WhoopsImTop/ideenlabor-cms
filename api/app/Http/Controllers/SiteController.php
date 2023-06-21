@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\SiteResource;
 use App\Models\Site;
 use Illuminate\Http\Request;
 
@@ -12,7 +13,7 @@ class SiteController extends Controller
      */
     public function index()
     {
-        return site::all();
+        return SiteResource::collection(Site::all());
     }
 
     /**
@@ -20,7 +21,18 @@ class SiteController extends Controller
      */
     public function store(Request $request)
     {
-        return site::create($request->all());
+        // set pageContent json to saveable String
+        $pageContent = json_encode($request->pageContent);
+        $request->merge(['pageContent' => $pageContent]);
+
+        //if slug is empty set slug to title and replace spaces with dashes and to lowercase
+        if ($request->slug == '') {
+            $request->merge(['slug' => strtolower(str_replace(' ', '-', $request->title))]);
+        } else {
+            $request->merge(['slug' => strtolower(str_replace(' ', '-', $request->slug))]);
+        }
+
+        return SiteResource::make(Site::create($request->all()));
     }
 
     /**
@@ -28,7 +40,7 @@ class SiteController extends Controller
      */
     public function show(site $site)
     {
-        return $site;
+        return SiteResource::make($site);
     }
 
     /**
@@ -36,9 +48,19 @@ class SiteController extends Controller
      */
     public function update(Request $request, site $site)
     {
+        // set pageContent json to saveable String
+        $pageContent = json_encode($request->pageContent);
+        $request->merge(['pageContent' => $pageContent]);
         $site->update($request->all());
 
-        return $site;
+        //if slug is empty set slug to title and replace spaces with dashes and to lowercase
+        if ($request->slug == '') {
+            $request->merge(['slug' => strtolower(str_replace(' ', '-', $request->title))]);
+        } else {
+            $request->merge(['slug' => strtolower(str_replace(' ', '-', $request->slug))]);
+        }
+
+        return SiteResource::make($site);
     }
 
     /**

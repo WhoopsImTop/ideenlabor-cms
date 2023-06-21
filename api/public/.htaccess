@@ -1,6 +1,10 @@
 <IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes
+        # enable cors for images in public folder
+        <FilesMatch "\.(jpg|jpeg|png|gif|svg|ico|css|js)$">
+            Header set Access-Control-Allow-Origin "*"
+        </FilesMatch>
     </IfModule>
 
     RewriteEngine On
@@ -18,4 +22,5 @@
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
+
 </IfModule>

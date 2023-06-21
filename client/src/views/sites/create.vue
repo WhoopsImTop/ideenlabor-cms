@@ -8,7 +8,7 @@
             <input
               class="p-2 border-solid border-gray-300 border-2 rounded"
               type="text"
-              v-model="title"
+              v-model="site.title"
               placeholder="Seitentitel"
             />
           </div>
@@ -18,7 +18,7 @@
             <input
               class="p-2 border-solid border-gray-300 border-2 rounded"
               type="text"
-              v-model="slug"
+              v-model="site.slug"
               placeholder="URL-Pfad"
             />
           </div>
@@ -34,7 +34,7 @@
     <div class="bg-white p-4 rounded shadow my-2">
       <h3>Aktionen</h3>
       <div class="flex justify-end">
-        <button class="btn px-4 py-2 rounded bg-gray-300 text-white mr-2">
+        <button class="btn px-4 py-2 rounded bg-gray-300 text-white mr-2" @click="goBack()">
           Abbrechen
         </button>
         <button
@@ -49,6 +49,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import builderComponentRenderer from "../../components/builderComponentRenderer.vue";
 export default {
   data() {
@@ -89,7 +90,16 @@ export default {
   },
   methods: {
     savePageData() {
-      console.log(this.site);
+      axios.post('http://127.0.0.1:8000/api/sites', this.site)
+      .then(response => {
+        console.log(response)
+      })
+      .catch(error => {
+        console.log(error)
+      })
+    },
+    goBack() {
+      this.$router.go(-1);
     },
   },
 };

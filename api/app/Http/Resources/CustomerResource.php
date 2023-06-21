@@ -16,10 +16,10 @@ class CustomerResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'customer_id' => $this->customer_id,
             'customer_number' => $this->customer_number,
+            'customer_company_name' => $this->customer_company_name ?? '',
             'customer_name' => $this->customer_name,
-            'customer_address' => $this->customer_address,
+            'customer_address' => $this->customer_address ?? '',
             'customer_street' => $this->customer_street,
             'customer_zip' => $this->customer_zip,
             'customer_city' => $this->customer_city,
@@ -29,6 +29,7 @@ class CustomerResource extends JsonResource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'invoices' => $this->invoices,
+            'offers' => $this->offers,
         ];
     }
 }

@@ -12,9 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('sites', function (Blueprint $table) {
+            $table->id()->autoIncrement();
             $table->string('title');
             $table->string('slug')->unique();
             $table->json('pageContent')->nullable();
+            $table->string('metadata')->nullable();
+            $table->string('collection')->nullable();
             $table->string('status')->nullable();
             $table->timestamps();
         });

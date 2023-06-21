@@ -34,7 +34,7 @@ export default {
   },
   methods: {
     getData() {
-        return this.selectedCustomer;
+        return this.customer_name;
     },
     selectCustomer(customer) {
         this.customer_name = customer.customer_name;
