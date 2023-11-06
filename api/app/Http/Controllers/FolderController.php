@@ -91,11 +91,11 @@ class FolderController extends Controller
         }
     }
 
-    public function destroy($customer_id, $folder_hash)
+    public function destroy($folder_hash)
     {
         try {
             //get folder and delete it
-            $folder = Folder::where('customer_id', $customer_id)->where('folder_hash', $folder_hash)->first();
+            $folder = Folder::where('folder_hash', $folder_hash)->first();
             $folder->delete();
 
             return response()->json([

@@ -11,7 +11,7 @@
       <div>
         <router-link
           class="btn px-4 py-2 rounded bg-blue-600 text-white"
-          to="/cms/create-customerCenter"
+          to="/cms/customer-center/create"
           >Neues Kundencenter</router-link
         >
       </div>

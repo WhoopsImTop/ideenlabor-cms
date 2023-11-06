@@ -49,7 +49,9 @@
       <div class="rounded bg-white p-2 shadow-sm mb-4">
         <p>
           <strong>Name:</strong>
-          {{ currentCustomerCenter.customer.customer_name }}
+          {{ currentCustomerCenter.customer.customer_name != ''
+            ? currentCustomerCenter.customer.customer_name
+            : currentCustomerCenter.customer.customer_company_name }}
         </p>
         <p>
           <strong>Email:</strong>
@@ -137,7 +139,10 @@
             </td>
             <td>
               <div class="flex items-center justify-end py-2 px-2">
-                <a @click="deleteFile(folder.id)"
+                <a @click="editFolder(folder.id)">
+                  <img src="./../../assets/edit.svg" width="18" alt="folder" />
+                </a>
+                <a @click="deleteFolder(folder.folder_hash)"
                   ><img src="./../../assets/delete.svg" width="20"
                 /></a>
               </div>
@@ -256,6 +261,18 @@ export default {
         .then((response) => {
           this.currentFolder.uploads = this.currentFolder.uploads.filter(
             (file) => file.id !== fileId
+          );
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    deleteFolder(folderId) {
+      axios
+        .delete("/api/folders/" + folderId)
+        .then((response) => {
+          this.currentFolder.folder_children = this.currentFolder.folder_children.filter(
+            (folder) => folder.id !== folderId
           );
         })
         .catch((error) => {

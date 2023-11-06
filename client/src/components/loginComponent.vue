@@ -19,7 +19,9 @@
           v-model="password"
           placeholder="Password"
         />
-        <p class="error-message" v-if="errorMessage != ''">{{ errorMessage }}</p>
+        <p class="error-message" v-if="errorMessage != ''">
+          {{ errorMessage }}
+        </p>
         <button class="login-button" @click="login">Anmelden</button>
       </div>
     </div>
@@ -47,10 +49,10 @@ export default {
         })
         .then((res) => {
           localStorage.setItem("token", res.data.token);
-          this.$router.push("/cms");
+          window.location.href = "/cms";
         })
         .catch((err) => {
-          this.errorMessage = "Email oder Passwort falsch!"
+          this.errorMessage = "Email oder Passwort falsch!";
         });
     },
   },

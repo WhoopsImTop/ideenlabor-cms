@@ -111,6 +111,11 @@ const router = createRouter({
       component: () => import("../views/customerCenter/overview.vue"),
     },
     {
+      path: "/cms/customer-center/create",
+      name: "createCustomerCenter",
+      component: () => import("../views/customerCenter/create.vue"),
+    },
+    {
       path: "/cms/customer-center/:id",
       name: "editCustomerCenter",
       component: () => import("../views/customerCenter/edit.vue"),

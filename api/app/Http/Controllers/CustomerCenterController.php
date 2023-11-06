@@ -78,6 +78,7 @@ class CustomerCenterController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
+                'error' => $e->getMessage(),
                 'message' => 'Customer Center creation failed'
             ], 500);
         }
