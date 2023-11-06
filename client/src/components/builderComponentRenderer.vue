@@ -10,17 +10,23 @@
       @closeComponentDrawer="unsetComponentsDrawer"
       @addComponentToRow="addComponentFromDrawer"
     ></componentsDrawer>
-    <component
-      v-for="(component, index) in pageContent.components"
-      :key="index"
-      :is="component.type"
-      :component="component"
-      :index="index"
-      @removeRow="removeRow"
-      @triggerComponentsDrawer="setComponentsDrawer"
-      @triggerComponentEdit="showComponentDrawer"
-      
-    ></component>
+    <div class="component-rows">
+      <component
+        v-for="(component, index) in pageContent.components"
+        :key="index"
+        :is="component.type"
+        :component="component"
+        :index="index"
+        class="component"
+        draggable="true"
+        @removeRow="removeRow"
+        @triggerComponentsDrawer="setComponentsDrawer"
+        @triggerComponentEdit="showComponentDrawer"
+        @triggerComponentDelete="removeComponent"
+        @moveRowUp="moveRowUp"
+        @moveRowDown="moveRowDown"
+      ></component>
+    </div>
     <button class="py-1 px-2 bg-gray-200 rounded" @click="addRow">
       Reihe hinzufügen
     </button>
@@ -56,6 +62,34 @@ export default {
     componentEditDrawer,
   },
   methods: {
+    moveRowUp(component) {
+      if (component > 0) {
+        this.pageContent.components.splice(
+          component - 1,
+          0,
+          this.pageContent.components.splice(component, 1)[0]
+        );
+      }
+    },
+    moveRowDown(component) {
+      if (component < this.pageContent.components.length - 1) {
+        this.pageContent.components.splice(
+          component + 1,
+          0,
+          this.pageContent.components.splice(component, 1)[0]
+        );
+      }
+    },
+    removeComponent(component) {
+      this.pageContent.components[this.rowIndex].component[
+        this.componentIndex
+      ].components.splice(
+        this.pageContent.components[this.rowIndex].component[
+          this.componentIndex
+        ].components.indexOf(component),
+        1
+      );
+    },
     setComponentsDrawer(componentIndex, index) {
       this.componentIndex = componentIndex;
       this.rowIndex = index;
@@ -68,7 +102,9 @@ export default {
       this.showComponentsDrawer = false;
     },
     addComponentFromDrawer(component) {
-      this.pageContent.components[this.rowIndex].component[this.componentIndex].components.push(component);
+      this.pageContent.components[this.rowIndex].component[
+        this.componentIndex
+      ].components.push(component);
       this.unsetComponentsDrawer();
       this.showComponentDrawer(component);
     },
@@ -93,25 +129,14 @@ export default {
             type: "col",
             label: "Spalte",
             components: [],
-          }
+          },
         ],
       });
     },
   },
 
   mounted() {
-    //handle drag and drop
-    const useableComponents = document.querySelectorAll(".useable-component");
-
-    //drag and drop for useable components
-    useableComponents.forEach((useableComponent) => {
-      useableComponent.addEventListener("dragstart", (e) => {
-        useableComponent.classList.add("dragging");
-      });
-      useableComponent.addEventListener("dragend", (e) => {
-        useableComponent.classList.remove("dragging");
-      });
-    });
+    
   },
 };
 </script>

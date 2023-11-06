@@ -25,6 +25,18 @@
         >{{ seite.name }}</router-link
       >
     </div>
+    
+    <div class="mt-10">
+      <h4 class="font-bold text-sm">Kundencenter</h4>
+
+      <router-link
+        v-for="seite in kundenCenter"
+        :key="seite.link"
+        :to="seite.link"
+        class="block p-2 my-1 rounded hover:bg-blue-100"
+        >{{ seite.name }}</router-link
+      >
+    </div>
   </div>
 </template>
 
@@ -36,33 +48,43 @@ export default {
       verwaltung: [
         {
           name: "Seiten",
-          link: "/pages",
+          link: "/cms/pages",
         },
         {
           name: "Medien",
-          link: "/media",
+          link: "/cms/media",
         },
       ],
       buchhaltung: [
         {
           name: "Rechnungen",
-          link: "/invoices",
+          link: "/cms/invoices",
         },
         {
           name: "Angebote",
-          link: "/offers",
+          link: "/cms/offers",
+        },
+        {
+          name: "Serienrechnungen",
+          link: "/cms/recurring-invoices",
         },
         {
           name: "Kunden",
-          link: "/customers",
+          link: "/cms/customers",
         },
         {
           name: "Leistungen",
-          link: "/services",
+          link: "/cms/services",
         },
         {
           name: "Firmendaten",
-          link: "/company",
+          link: "/cms/company",
+        },
+      ],
+      kundenCenter: [
+        {
+          name: "Alle Kundencenter",
+          link: "/cms/customer-center",
         },
       ],
     };

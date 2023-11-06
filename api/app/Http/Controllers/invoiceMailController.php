@@ -20,6 +20,7 @@ class InvoiceMailController extends Controller {
 
         $options = [
             'email' => $request->email,
+            'bcc' => '25745e47-2f6f-4c40-9f6f-169469c270fe@uploadmail.datev.de',
             'name' => $customer->customer_name,
             'company_logo' => $firma->company_image,
             'message' => $request->message,

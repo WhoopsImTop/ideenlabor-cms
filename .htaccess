@@ -1,0 +1,9 @@
+RewriteEngine On
+
+# Weiterleitung von /api auf /api/public
+RewriteCond %{REQUEST_URI} ^/api [NC]
+RewriteRule ^(.*)$ /ideenlabor-cms/api/public/$1 [L]
+
+# Weiterleitung von /cms auf /client/dist
+RewriteCond %{REQUEST_URI} ^/cms [NC]
+RewriteRule ^(.*)$ /ideenlabor-cms/client/dist/$1 [L]

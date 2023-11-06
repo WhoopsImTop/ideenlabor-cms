@@ -12,6 +12,7 @@ class Customer extends Model
     protected $fillable = [
         'customer_number',
         'customer_company_name',
+        'customer_pin',
         'customer_name',
         'customer_address',
         'customer_street',
@@ -30,5 +31,15 @@ class Customer extends Model
     public function offers()
     {
         return $this->hasMany(Offer::class, 'customer_number', 'customer_number');
+    }
+
+    public function applications()
+    {
+        return $this->belongsToMany(Application::class);
+    }
+
+    public function customer_center()
+    {
+        return $this->hasOne(CustomerCenter::class)->with('uploads');
     }
 }

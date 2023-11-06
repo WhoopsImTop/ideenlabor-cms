@@ -1,0 +1,281 @@
+<div id="speisekarte"></div>
+
+<script>
+// Das JSON-Array
+var speisekarte = {
+  "Speisekarte": [
+    {
+      "name": "Mittagskarte",
+      "name_fr": "Menu du midi",
+      "name_en": "Lunch menu",
+      "menu": [
+        {
+          "number": 701,
+          "name": "Gyros mit Zaziki",
+          "name_fr": "Gyros avec tzatziki",
+          "name_en": "Gyros with tzatziki",
+          "description": "mit Pommes und gem. Salat",
+          "description_fr": "avec frites et salade mixte",
+          "description_en": "with french fries and mixed salad",
+          "price": 9.0
+        },
+        {
+          "number": 702,
+          "name": "1 Fleischspieß mit Gyros",
+          "name_fr": "1 brochette de viande avec gyros",
+          "name_en": "1 meat skewer with gyros",
+          "description": "mit Pommes und gem. Salat",
+          "description_fr": "avec frites et salade mixte",
+          "description_en": "with french fries and mixed salad",
+          "ingredients": "2,9,c,g,k",
+          "price": 11.0
+        },
+        {
+          "number": 703,
+          "name": "1 Schweinesteak",
+          "name_fr": "1 steak de porc",
+          "name_en": "1 pork steak",
+          "description": "Gyros, Pommes und gem. Salat",
+          "description_fr": "gyros, frites et salade mixte",
+          "description_en": "gyros, french fries and mixed salad",
+          "ingredients": "2,9,c,g,k",
+          "price": 9.5
+        },
+        {
+          "number": 704,
+          "name": "1 Hacksteak",
+          "name_fr": "1 steak haché",
+          "name_en": "1 minced steak",
+          "description": "Gyros, Pommes und gem. Salat",
+          "description_fr": "gyros, frites et salade mixte",
+          "description_en": "gyros, french fries and mixed salad",
+          "ingredients": "9,c,g,k",
+          "price": 9.5
+        },
+        {
+          "number": 705,
+          "name": "2 Lammkotletts",
+          "name_fr": "2 côtelettes d‘ agneau",
+          "name_en": "2 lamb chops",
+          "description": "Gyros, Pommes und gem. Salat",
+          "description_fr": "gyros, frites et salade mixte",
+          "description_en": "gyros, french fries and mixed salad",
+          "ingredients": "9,c,g,k",
+          "price": 11.0
+        },
+        {
+          "number": 707,
+          "name": "Hähnchenbrustfilet mit Metaxa Sauce",
+          "name_fr": "Filet de poulet avec sauce Metaxa",
+          "name_en": "Chicken breast fillet with Metaxa sauce",
+          "description": "mit Pommes und gem. Salat",
+          "description_fr": "avec frites et salade mixte",
+          "description_en": "with french fries and mixed salad",
+          "ingredients": "2,9,8,c,g,k,a",
+          "price": 9.50
+        },
+        {
+          "number": 708,
+          "name": "Gyros mit Tintenfischringen",
+          "name_fr": "Gyros avec anneaux de calamars",
+          "name_en": "Gyros with squid rings",
+          "description": "mit Pommes und gem. Salat",
+          "description_fr": "avec frites et salade mixte",
+          "description_en": "with french fries and mixed salad",
+          "ingredients": "2,9,8,c,g,k,a",
+          "price": 9.50
+        },
+        {
+          "number": 710,
+          "name": "Gyros Spezial",
+          "name_fr": "Gyros Spécial",
+          "name_en": "Gyros Special",
+          "description": "mit Metaxa Sauce, Käse (überbacken), Pommes und gem. Salat",
+          "description_fr": "avec sauce Metaxa, fromage (gratiné), frites et salade mixte",
+          "description_en": "with Metaxa sauce, cheese (au gratin), french fries and mixed salad",
+          "ingredients": "2,9,8,c,g,k,a",
+          "price": 10.0
+        },
+        {
+          "number": 715,
+          "name": "Rumpsteak mit Kräuterbutter",
+          "name_fr": "Steak de rumsteak avec beurre aux herbes",
+          "name_en": "Rump steak with herb butter",
+          "description": "mit Pommes und gem. Salat",
+          "description_fr": "avec frites et salade mixte",
+          "description_en": "with french fries and mixed salad",
+          "ingredients": "2,9,8,c,g,k,a",
+          "price": 12.0
+        },
+        {
+          "number": 716,
+          "name": "5 Tintenfischringe mit Zaziki",
+          "name_fr": "5 anneaux de calamars avec tzatziki",
+          "name_en": "5 squid rings with tzatziki",
+          "description": "mit Pommes und gem. Salat",
+          "description_fr": "avec frites et salade mixte",
+          "description_en": "with french fries and mixed salad",
+          "ingredients": "2,9,8,c,g,k,a",
+          "price": 10.5
+        },
+        {
+          "number": 717,
+          "name": "Seezungenfilet mit Zaziki",
+          "name_fr": "Filet de sole avec tzatziki",
+          "name_en": "Sole fillet with tzatziki",
+          "description": "mit Pommes und gem. Salat",
+          "description_fr": "avec frites et salade mixte",
+          "description_en": "with french fries and mixed salad",
+          "ingredients": "2,9,8,c,g,k,a",
+          "price": 11.0
+        },
+        {
+          "number": 719,
+          "name": "Corfu Salat",
+          "name_fr": "Salade Corfou",
+          "name_en": "Corfu salad",
+          "description": "grüner Salat mit Gyros,Tomaten, Gurken, Zwiebel, Oliven und Paprika, mit Joghurtsauce",
+          "description_fr": "salade verte avec gyros, tomates, concombres, oignons, olives et poivrons, avec sauce au yaourt",
+          "description_en": "green salad with gyros, tomatoes, cucumbers, onions, olives and peppers, with yoghurt sauce",
+          "ingredients": "2,9,8,c,g,k,a",
+          "price": 9.0
+        },
+        {
+          "number": 720,
+          "name": "Chefsalat",
+          "name_fr": "Salade du chef",
+          "name_en": "Chef‘s salad",
+          "description": "grüner Salat mit Hähnchenbruststreifen,Tomaten, Gurken, Zwiebeln, Oliven und Paprika, mit Joghurtsauce",
+          "description_fr": "salade verte avec lanières de blanc de poulet, tomates, concombres, oignons, olives et poivrons, avec sauce au yaourt",
+          "description_en": "green salad with chicken breast strips, tomatoes, cucumbers, onions, olives and peppers, with yoghurt sauce",
+          "ingredients": "2,9,8,c,g,k,a",
+          "price": 9.8
+        },
+        {
+          "number": 721,
+          "name": "Gyrospfanne",
+          "name_fr": "Poêlée de gyros",
+          "name_en": "Gyros pan",
+          "description": "mit Rahmsauce, Pommes und gem. Salat",
+          "description_fr": "avec sauce à la crème, frites et salade mixte",
+          "description_en": "with cream sauce, french fries and mixed salad",
+          "ingredients": "2,9,8,c,g,k,a",
+          "price": 11.0
+        },
+        {
+          "number": 722,
+          "name": "Gyrospfanne mit Metaxa Sauce",
+          "name_fr": "Poêlée de gyros avec sauce Metaxa",
+          "name_en": "Gyros pan with Metaxa sauce",
+          "description": "mit Pommes und gem. Salat",
+          "description_fr": "avec frites et salade mixte",
+          "description_en": "with french fries and mixed salad",
+          "ingredients": "2,9,8,c,g,k,a",
+          "price": 11.0
+        }
+      ]
+    },
+  ]
+};
+
+
+function loadMenu(lang) {
+    var menuItems = speisekarte.Speisekarte;
+
+    menuItems.forEach(function (menu) {
+        const menuEntry = document.createElement("div");
+        var headerText = menu[lang ? "name_" + lang : "name"];
+        var menuItems = menu.menu;
+
+        var h2 = document.createElement("h2");
+        h2.classList.add("speisekarteHeader");
+        h2.textContent = headerText;
+        menuEntry.appendChild(h2);
+
+        var table = document.createElement("table");
+        //add colgroup to table
+        var colgroup = document.createElement("colgroup");
+        colgroup.id = "colgroup";
+        var col1 = document.createElement("col");
+        col1.setAttribute("width", "35px");
+        var col2 = document.createElement("col");
+        col2.setAttribute("width", "*");
+        var col3 = document.createElement("col");
+        col3.setAttribute("width", "90px");
+        colgroup.appendChild(col1);
+        colgroup.appendChild(col2);
+        colgroup.appendChild(col3);
+        table.appendChild(colgroup);
+        var thead = table.createTHead();
+        var row = thead.insertRow();
+        var headers = ["Nr.", "Name", ""];
+
+        headers.forEach(function (headerText) {
+            var th = document.createElement("th");
+            th.textContent = headerText;
+            row.appendChild(th);
+        });
+
+        var tbody = table.createTBody();
+        menuItems.forEach(function (item) {
+            var row = tbody.insertRow();
+            var cell1 = row.insertCell(0);
+            var cell2 = row.insertCell(1);
+            var cell3 = row.insertCell(2);
+
+            cell1.textContent = item.number;
+            
+            const div = document.createElement("div");
+            div.setAttribute("style", "display: flex; align-items: flex-start");
+
+            const title = document.createElement("span");
+            title.classList.add("gerichtTitel");
+            title.innerText = item[lang ? "name_" + lang : "name"];
+
+            const ingredients = document.createElement("span");
+            ingredients.classList.add("gerichtZutaten");
+            ingredients.innerText = item.ingredients ?? '';
+            div.appendChild(title);
+            div.appendChild(ingredients);
+            cell2.appendChild(div);
+
+            const description = document.createElement("p");
+            description.classList.add("gerichtBeschreibung");
+            description.innerText = item[lang ? "description_" + lang : "description"];
+            cell2.appendChild(description);
+            
+            cell3.setAttribute("align", "right");
+
+            cell3.classList.add("gerichtPreis");
+            cell3.setAttribute("style", "white-space: no-wrap");
+            cell3.textContent = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(item.price);
+        });
+        menuEntry.appendChild(table);
+        document.getElementById('speisekarte').appendChild(menuEntry);
+    });
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    
+var urlPath = window.location.pathname;
+
+// Ein regulärer Ausdruck, um die Sprache aus dem Pfad zu extrahieren
+var langRegExp = /\/([a-z]{2})\//;
+var match = urlPath.match(langRegExp);
+
+// Standardmäßig auf Englisch anzeigen
+if (match) {
+    var lang = match[1];
+} else {
+    var lang = "";
+}
+
+if (lang === "fr") {
+    loadMenu("fr");
+} else if (lang === "en") {
+    loadMenu("en");
+} else {
+	loadMenu("");
+}
+});
+</script>

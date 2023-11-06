@@ -32,6 +32,8 @@ class OfferResource extends JsonResource
             'invoice_path' => $this->invoice_path,
             'invoice_total' => $this->invoice_total,
             'invoice_status' => $this->invoice_status,
+            'invoice_sent' => $this->invoice_sent,
+            'invoice_send_date' => $this->invoice_send_date,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'customer' => $this->customer,

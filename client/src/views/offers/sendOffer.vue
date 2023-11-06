@@ -25,7 +25,7 @@
 
         <div class="mt-4">
           <textarea
-            v-model="invoiceEmailMessageFilledPlaceholder"
+            v-model="invoiceEmailMessage"
             cols="30"
             rows="10"
           ></textarea>
@@ -33,10 +33,11 @@
 
         <div class="mt-4 flex align-center">
           <button
+            :disabled="loadingBtn"
             @click="sendInvoiceViaEmail"
             class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           >
-            Angebot per Email versenden
+            {{ loadingBtnText }}
           </button>
         </div>
 
@@ -67,28 +68,22 @@ Bei Fragen stehen wir Ihnen gerne zur Verfügung.
 
 Mit freundlichen Grüßen
 Christian Bucher`,
+      loadingBtn: false,
+      loadingBtnText: "Angebot versenden",
     };
-  },
-  computed: {
-    invoiceEmailMessageFilledPlaceholder() {
-      return this.invoiceEmailMessage
-        .replace("{{ invoice.invoice_number }}", this.invoice.invoice_number)
-        .replace(
-          "{{ invoice.invoice_date }}",
-          new Date(this.invoice.invoice_date).toLocaleDateString("de-DE")
-        );
-    },
   },
   methods: {
     sendInvoiceViaEmail() {
+      this.loadingBtn = true;
+      this.loadingBtnText = "Versende Angebot...";
       //replace \n with <br> for html email
-      let invoiceMessage = this.invoiceEmailMessageFilledPlaceholder.replace(
+      let invoiceMessage = this.invoiceEmailMessage.replace(
         /\n/g,
         "<br>"
       );
       axios
         .post(
-          "http://127.0.0.1:8000/api/offers/send/" +
+          "/api/offers/send/" +
             this.$route.params.offer_number,
           {
             email: this.invoiceEmail,
@@ -98,26 +93,45 @@ Christian Bucher`,
         )
         .then((response) => {
           this.successResponse = response.data.message;
+          this.loadingBtn = false;
+          this.loadingBtnText = "Angebot erfolgreich versendet";
+          setTimeout(() => {
+            this.loadingBtnText = "Angebot versenden";
+          }, 3000);
         })
         .catch((error) => {
+          this.loadingBtn = false;
+          this.loadingBtnText = "Angebot versenden";
           console.log(error);
+          window.alert(
+            "Email konnte nicht versendet werden... Bitte versuchen Sie es später erneut."
+          );
         });
     },
   },
-  beforeMount() {
+  created() {
     axios
       .get(
-        "http://127.0.0.1:8000/api/offers/" +
+        "/api/offers/" +
           this.$route.params.offer_number
       )
       .then((response) => {
         this.invoice = response.data.data;
         this.invoiceEmail = this.invoice.customer.customer_email;
         //display pdf in canvas
-        this.pdfSource = "http://127.0.0.1:8000/" + this.invoice.invoice_path;
+        this.pdfSource =
+          "https://ideenlabor-agentur.de/api/public/" +
+          this.invoice.invoice_path;
+
+        this.invoiceEmailMessage = this.invoiceEmailMessage
+          .replace("{{ invoice.invoice_number }}", this.invoice.invoice_number)
+          .replace(
+            "{{ invoice.invoice_date }}",
+            new Date(this.invoice.invoice_date).toLocaleDateString("de-DE")
+          );
       })
       .catch((error) => {
-        console.log(error);
+        window.alert("Es ist ein Fehler aufgetreten");
       });
   },
 };

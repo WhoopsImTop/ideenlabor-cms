@@ -51,7 +51,6 @@ class SiteController extends Controller
         // set pageContent json to saveable String
         $pageContent = json_encode($request->pageContent);
         $request->merge(['pageContent' => $pageContent]);
-        $site->update($request->all());
 
         //if slug is empty set slug to title and replace spaces with dashes and to lowercase
         if ($request->slug == '') {
@@ -60,6 +59,7 @@ class SiteController extends Controller
             $request->merge(['slug' => strtolower(str_replace(' ', '-', $request->slug))]);
         }
 
+        $site->update($request->all());
         return SiteResource::make($site);
     }
 

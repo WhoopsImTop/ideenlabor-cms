@@ -18,38 +18,23 @@ class InvoiceController extends Controller
 
     public function store(Request $request)
     {
-        $invoice_number = 'RE' . '-' . substr(date('Y'), 2) . '-' . str_pad(Invoice::whereYear('created_at', date('Y'))->count() + 1, 3, '0', STR_PAD_LEFT);
-        $request->merge(['invoice_number' => $invoice_number]);
-
         //convert invoice_positions to json_string
         $invoice_positions = json_encode($request->invoice_positions);
         $request->merge(['invoice_positions' => $invoice_positions]);
 
         //create invoice
         $invoice = Invoice::create($request->all());
-
-        $companyData = Firma::find(1);
-
-        //create pdf
-        $pdf = Pdf::loadView('index', compact('invoice', 'companyData'));
-        
-        //save the pdf to storage invoice/year/month/customer_name/invoice_number.pdf
         $customer = Customer::where('customer_number', $invoice->customer_number)->first();
-        //create directory if not exists
-        $public_folder_path = 'invoice/' . date('Y') . '/' . date('m') . '/';
-        if (!file_exists($public_folder_path)) {
-            mkdir($public_folder_path, 0777, true);
-        }
-        $pdf->save('invoice/' . date('Y') . '/' . date('m') . '/' . $invoice->invoice_number . '.pdf');
-
-        //add filepath to invoice
-        $invoice->update(['invoice_path' => 'invoice/' . date('Y') . '/' . date('m') . '/' . $invoice->invoice_number . '.pdf']);
 
         //relate invoice to customer
         $customer->invoices()->save($invoice);
 
         //relate customer to invoice
         $invoice->customer()->associate($customer)->save();
+
+
+        $invoice->generateInvoicePDF();
+
 
         return new InvoiceResource($invoice);
     }
@@ -64,35 +49,38 @@ class InvoiceController extends Controller
 
     public function update(Request $request, Invoice $invoice)
     {
-
+        //get update_status search query params
+        $update_status = $request->query('update_status');
         //convert invoice_positions to json_string
-        $invoice_positions = json_encode($request->invoice_positions);
-        $request->merge(['invoice_positions' => $invoice_positions]);
+        try {
+            if ($update_status == 1) {
+                $invoice->update($request->all());
 
+                return new InvoiceResource($invoice);
+            } else {
+                try {
+                    $invoice_positions = json_encode($request->invoice_positions);
+                    $request->merge(['invoice_positions' => $invoice_positions]);
+                } catch (\Exception $e) {
+                    return response()->json(['message' => $e->getMessage()], 500);
+                }
 
-        $invoice->update($request->all());
+                $invoice->update($request->all());
 
-        $companyData = Firma::find(1);
+                $invoice->generateInvoicePDF();
 
-        //update pdf
-        $pdf = Pdf::loadView('index', compact('invoice', 'companyData'));
-        //create directory if not exists
-        $public_folder_path = 'invoice/' . date('Y') . '/' . date('m') . '/';
-
-        if (!file_exists($public_folder_path)) {
-            mkdir($public_folder_path, 0777, true);
+                return new InvoiceResource($invoice);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
         }
-
-        $pdf->save('invoice/' . date('Y') . '/' . date('m') . '/' . $invoice->invoice_number . '.pdf');
-
-        //update filepath to invoice
-        $invoice->update(['invoice_path' => 'invoice/' . date('Y') . '/' . date('m') . '/' . $invoice->invoice_number . '.pdf']);
-
-        return new InvoiceResource($invoice);
     }
-
     public function destroy(Invoice $invoice)
     {
+        //delete pdf from storage
+        if (file_exists($invoice->invoice_path)) {
+            unlink($invoice->invoice_path);
+        }
         $invoice->delete();
 
         return response()->json(null, 204);

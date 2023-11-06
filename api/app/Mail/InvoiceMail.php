@@ -44,7 +44,7 @@ class InvoiceMail extends Mailable implements ShouldQueue
     public function build(): InvoiceMail
     {
         //set from
-        $from = 'rechnungen@ideenlabor-agentur.de';
+        $from = 'buchhaltung@ideenlabor-agentur.de';
 
         //set to
         $to = $this->options['email'];
@@ -53,7 +53,7 @@ class InvoiceMail extends Mailable implements ShouldQueue
         //$bcc = $this->options['bcc'];
 
         //set replyTo
-        $replyTo = 'rechnungen@ideenlabor-agentur.de';
+        $replyTo = 'buchhaltung@ideenlabor-agentur.de';
 
         //set attach
         $attach = $this->invoice['invoice_path'];
@@ -82,7 +82,11 @@ class InvoiceMail extends Mailable implements ShouldQueue
                 'company_logo' => $this->options['company_logo']
             ])
             ->attach($attach);
-
+        
+        //if bcc is set attach bcc
+        if (isset($this->options['bcc'])) {
+            $mail->bcc($this->options['bcc']);
+        }
         //return mail
         return $mail;
     }

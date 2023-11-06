@@ -14,5 +14,6 @@ class Site extends Model
         'slug',
         'pageContent',
         'status',
+        'collection',
     ];
 }

@@ -124,7 +124,7 @@ export default {
       if (this.customer.customer_number) {
         axios
           .patch(
-            "http://127.0.0.1:8000/api/customers/" + this.customer.id,
+            "/api/customers/" + this.customer.id,
             this.customer
           )
           .then((response) => {
@@ -135,7 +135,7 @@ export default {
           });
       } else {
         axios
-          .post("http://127.0.0.1:8000/api/customers", this.customer)
+          .post("/api/customers", this.customer)
           .then((response) => {
             this.$emit("closePopup", response.data);
           })
@@ -146,7 +146,7 @@ export default {
     },
     deleteCustomer() {
       axios
-        .delete("http://127.0.0.1:8000/api/customers/" + this.customer.id)
+        .delete("/api/customers/" + this.customer.id)
         .then((response) => {
           this.$emit("closePopup", response.data);
         })

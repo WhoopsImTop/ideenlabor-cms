@@ -16,6 +16,7 @@ class CustomerResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'applications' => $this->applications,
             'customer_number' => $this->customer_number,
             'customer_company_name' => $this->customer_company_name ?? '',
             'customer_name' => $this->customer_name,
@@ -26,6 +27,7 @@ class CustomerResource extends JsonResource
             'customer_country' => $this->customer_country,
             'customer_phone' => $this->customer_phone,
             'customer_email' => $this->customer_email,
+            'customer_center' => $this->customer_center,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'invoices' => $this->invoices,

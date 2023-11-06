@@ -1,7 +1,7 @@
 <template>
   <div>
     <input type="file" id="image" @change="uploadImage" />
-    <img class="imagePreview" :src="'http://127.0.0.1:8000' + imageUrl" />
+    <img class="imagePreview" :src="'https://ideenlabor-agentur.de' + imageUrl" />
   </div>
 </template>
 
@@ -28,7 +28,7 @@ export default {
       let formData = new FormData();
       formData.append("image", document.getElementById("image").files[0]);
       axios
-        .post("http://127.0.0.1:8000/api/images", formData)
+        .post("/api/images", formData)
         .then((response) => {
           this.imageUrl = response.data.data.src;
           this.component.src = response.data.data.src;

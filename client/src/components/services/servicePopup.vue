@@ -103,7 +103,7 @@ export default {
         this.service.service_total = this.service.service_price;
         axios
           .patch(
-            "http://127.0.0.1:8000/api/services/" + this.service.id,
+            "/api/services/" + this.service.id,
             this.service
           )
           .then((response) => {
@@ -115,7 +115,7 @@ export default {
       } else {
         this.service.service_total = this.service.service_price;
         axios
-          .post("http://127.0.0.1:8000/api/services", this.service)
+          .post("/api/services", this.service)
           .then((response) => {
             this.$emit("closePopup", response.data);
           })
@@ -126,7 +126,7 @@ export default {
     },
     deleteService() {
       axios
-        .delete("http://127.0.0.1:8000/api/services/" + this.service.id)
+        .delete("/api/services/" + this.service.id)
         .then((response) => {
           this.$emit("closePopup", response.data);
         })

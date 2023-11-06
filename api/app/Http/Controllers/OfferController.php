@@ -18,9 +18,6 @@ class OfferController extends Controller
 
     public function store(Request $request)
     {
-        $invoice_number = 'AG' . '-' . substr(date('Y'), 2) . '-' . str_pad(Offer::whereYear('created_at', date('Y'))->count() + 1, 3, '0', STR_PAD_LEFT);
-        $request->merge(['invoice_number' => $invoice_number]);
-
         //convert invoice_positions to json_string
         $invoice_positions = json_encode($request->invoice_positions);
         $request->merge(['invoice_positions' => $invoice_positions]);
@@ -69,6 +66,11 @@ class OfferController extends Controller
         $offer->update($request->all());
 
         $companyData = Firma::find(1);
+        
+        //delete old pdf from storage
+        if (file_exists($offer->invoice_path)) {
+            unlink($offer->invoice_path);
+        }
 
         //update pdf
         $pdf = Pdf::loadView('offer', compact('offer', 'companyData'));
@@ -89,6 +91,10 @@ class OfferController extends Controller
 
     public function destroy(Offer $offer)
     {
+        //delete pdf from storage
+        if (file_exists($offer->invoice_path)) {
+            unlink($offer->invoice_path);
+        }
         $offer->delete();
 
         return response()->json(null, 204);

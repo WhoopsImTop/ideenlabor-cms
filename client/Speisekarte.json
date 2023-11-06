@@ -1,0 +1,816 @@
+{
+  "Speisekarte": [
+    {
+      "name": "Kalte Vorspeisen",
+      "name_fr": "Entrées froides",
+      "name_en": "Cold starters",
+      "menu": [
+        {
+          "number": 01,
+          "name": "Knoblauchbrot",
+          "name_fr": "Tapain à l‘ ail et aux herbes",
+          "name_en": "Garlic bread",
+          "description": "Knoblauchbrot mit Kräutern",
+          "description_fr": "Tapain à l‘ ail et aux herbes",
+          "description_en": "Garlic bread with herbs",
+          "price": 5.5
+        },
+        {
+          "number": 03,
+          "name": "Dolmadakia",
+          "name_fr": "Feuilles de vigne farcies",
+          "name_en": "Stuffed vine leaves",
+          "description": "Weinblätter mit Reis gefüllt dazu Zaziki",
+          "description_fr": "Feuilles de vigne farcies au riz avec tzatziki",
+          "description_en": "Vine leaves stuffed with rice and tzatziki",
+          "ingredients": "2,9,c,g,k",
+          "price": 6.5
+        },
+        {
+          "number": 05,
+          "name": "Zaziki",
+          "name_fr": "Tzatziki",
+          "name_en": "Tzatziki",
+          "description": "Joghurtsauce mit Knoblauch und Gurken",
+          "description_fr": "Sauce au yaourt avec concombre et ail",
+          "description_en": "Yoghurt sauce with garlic and cucumber",
+          "ingredients": "2,9,c,g,k",
+          "price": 4.5
+        },
+        {
+          "number": 06,
+          "name": "Taramasalat",
+          "name_fr": "Tarama",
+          "name_en": "Taramasalata",
+          "description": "Fischeiercreme, roter Kaviar",
+          "description_fr": "Crème d‘ oeufs de poisson, caviar rouge",
+          "description_en": "Fish egg cream, red caviar",
+          "ingredients": "9,c,g,k",
+          "price": 4.5
+        },
+        {
+          "number": 08,
+          "name": "Calamari Salat",
+          "name_fr": "Salade de calamars",
+          "name_en": "Calamari salad",
+          "description": "Tintenfischringe, Essig, Öl und Oregano",
+          "description_fr": "Anneaux de calamars, vinaigre, huile et origan",
+          "description_en": "Squid rings, vinegar, oil and oregano",
+          "ingredients": "9,c,g,k",
+          "price": 9.0
+        },
+        {
+          "number": 09,
+          "name": "Kalter Vorspeisenteller",
+          "name_fr": "Assiette d‘ entrées froides",
+          "name_en": "Cold starter plate",
+          "description": "Calamari Salat, Schafskäse, Zaziki, Dolmadakia (Weinblätter mit Reis gefüllt, Oliven, Peperoni, Rote Paprika,Tirosalata*, Riesenbohnen)",
+          "description_fr": "Salade de calamars, fromage de brebis, tzatziki, feuilles de vigne farcies au riz, olives, poivrons, salade de fromage de brebis, haricots géants",
+          "description_en": "Calamari salad, feta cheese, tzatziki, stuffed vine leaves, olives, peppers, cheese salad, giant beans",
+          "ingredients": "2,9,8,c,g,k,a",
+          "price": 14.0
+        }
+      ]
+    },
+    {
+      "name": "Warme Vorspeisen",
+      "name_fr": "Entrées chaudes",
+      "name_en": "Hot starters",
+      "menu": [
+        {
+          "number": 13,
+          "name": "Rote Paprika",
+          "name_fr": "Poivrons rouges",
+          "name_en": "Red peppers",
+          "description": "Gefüllt mit Schafskäse, Knoblauch, Oregano",
+          "description_fr": "Farcis au fromage de brebis, ail, origan",
+          "description_en": "Stuffed with feta cheese, garlic, oregano",
+          "ingredients": "2,g",
+          "price": 6.5
+        },
+        {
+          "number": 14,
+          "name": "½ Dtzd. Schnecken",
+          "name_fr": "½ Douzaine d‘ escargots",
+          "name_en": "½ Dozen snails",
+          "description": "zubereitet nach Art des Hauses",
+          "description_fr": "préparés à la façon de la maison",
+          "description_en": "prepared in the style of the house",
+          "ingredients": "",
+          "price": 6.0
+        },
+        {
+          "number": 15,
+          "name": "Peperoni gegrillt ",
+          "name_fr": "Poivrons grillés",
+          "name_en": "Grilled peppers",
+          "description": "mit Knoblauch",
+          "description_fr": "avec ail",
+          "description_en": "with garlic",
+          "ingredients": "2",
+          "price": 5.0
+        },
+        {
+          "number": 22,
+          "name": "Tiropitakia",
+          "name_fr": "Feuilletés au fromage",
+          "name_en": "Cheese puff pastry",
+          "description": "Blätterteig mit Schafskäse gefüllt",
+          "description_fr": "Pâte feuilletée farcie au fromage de brebis",
+          "description_en": "Puff pastry filled with feta cheese",
+          "ingredients": "2,m",
+          "price": 5.5
+        }
+      ]
+    },
+    {
+      "name": "Salate",
+      "name_fr": "Salades",
+      "name_en": "Salads",
+      "menu": [
+        {
+          "number": 26,
+          "name": "Tomatensalat",
+          "name_fr": "Salade de tomates",
+          "name_en": "Tomato salad",
+          "description": "Mit Zwiebeln, Oliven, Gurken, Paprika, Olivenöl",
+          "description_fr": "Avec oignons, olives, concombres, poivrons, huile d‘ olive",
+          "description_en": "With onions, olives, cucumbers, peppers, olive oil",
+          "ingredients": "9,8,c,g,k",
+          "price": 4.8
+        },
+        {
+          "number": 27,
+          "name": "Großer Bauernsalat",
+          "name_fr": "Grande salade paysanne",
+          "name_en": "Large farmer‘s salad",
+          "description": "Grüner Salat,Tomaten, Gurken, Oliven, Peperoni, Schafskäse, Karotten, ital. Dressing",
+          "description_fr": "Salade verte, tomates, concombres, olives, poivrons, fromage de brebis, carottes, sauce italienne",
+          "description_en": "Green salad, tomatoes, cucumbers, olives, peppers, feta cheese, carrots, italian dressing",
+          "ingredients": "7,8,9,c,g,k",
+          "price": 9.5
+        },
+        {
+          "number": 29,
+          "name": "Chefsalat mit Hähnchenbruststreifen",
+          "name_fr": "Salade du chef avec des lanières de blanc de poulet",
+          "name_en": "Chef‘s salad with chicken breast strips",
+          "description": "Grüner Salat,Tomaten, Gurken, Oliven, Paprika, Zwiebeln, Joghurtsauce",
+          "description_fr": "Salade verte, tomates, concombres, olives, poivrons, oignons, sauce au yaourt",
+          "description_en": "Green salad, tomatoes, cucumbers, olives, peppers, onions, yoghurt sauce",
+          "ingredients": "2,9,10,c,g,k,m",
+          "price": 13.0
+        },
+        {
+          "number": 30,
+          "name": "Corfou Salat",
+          "name_fr": "Salade Corfou",
+          "name_en": "Corfou salad",
+          "description": "Grüner Salat, mit Gyros,Tomaten, Gurken, Oliven, Paprika, Zwiebeln, Joghurtsauce",
+          "description_fr": "Salade verte, avec gyros, tomates, concombres, olives, poivrons, oignons, sauce au yaourt",
+          "description_en": "Green salad, with gyros, tomatoes, cucumbers, olives, peppers, onions, yoghurt sauce",
+          "ingredients": "9,c,g,k,m",
+          "price": 13.0
+        }
+      ]
+    },
+    {
+      "name": "Suppen",
+      "name_fr": "Soupes",
+      "name_en": "Soups",
+      "menu": [
+        {
+          "number": 32,
+          "name": "Zwiebelsuppe",
+          "name_fr": "Soupe à l‘ oignon",
+          "name_en": "Onion soup",
+          "description": "",
+          "description_fr": "",
+          "description_en": "",
+          "ingredients": "2,n,m",
+          "price": 4.5
+        },
+        {
+          "number": 33,
+          "name": "Gulaschsuppe",
+          "name_fr": "Soupe au goulash",
+          "name_en": "Goulash soup",
+          "description": "",
+          "description_fr": "",
+          "description_en": "",
+          "ingredients": "2,4,n,m",
+          "price": 4.5
+        },
+        {
+          "number": 34,
+          "name": "Hühnersuppe",
+          "name_fr": "Soupe au poulet",
+          "name_en": "Chicken soup",
+          "description": "",
+          "description_fr": "",
+          "description_en": "",
+          "ingredients": "2,5,n,m",
+          "price": 4.5
+        },
+        {
+          "number": 35,
+          "name": "Bohnensuppe",
+          "name_fr": "Soupe aux haricots",
+          "name_en": "Bean soup",
+          "description": "",
+          "description_fr": "",
+          "description_en": "",
+          "ingredients": "2,n,m",
+          "price": 4.5
+        }
+      ]
+    },
+    {
+      "name": "Käse",
+      "name_fr": "Fromage",
+      "name_en": "Cheese",
+      "menu": [
+        {
+          "number": 38,
+          "name": "Feta",
+          "name_fr": "Feta",
+          "name_en": "Feta",
+          "description": "Griechischer Schafskäse mit Zwiebeln, Öl, Oregano",
+          "description_fr": "Fromage de brebis grec avec oignons, huile, origan",
+          "description_en": "Greek feta cheese with onions, oil, oregano",
+          "ingredients": "2",
+          "price": 6.0
+        },
+        {
+          "number": 39,
+          "name": "Feta im Ofen gebacken",
+          "name_fr": "Feta au four",
+          "name_en": "Feta baked in the oven",
+          "description": "Griechischer Schafskäse mit Tomaten, Paprika, Knoblauch, Zwiebel, Oregano und Kräuterbutter",
+          "description_fr": "Fromage de brebis grec avec tomates, poivrons, ail, oignons, origan et beurre aux herbes",
+          "description_en": "Greek feta cheese with tomatoes, peppers, garlic, onions, oregano and herb butter",
+          "ingredients": "2,g",
+          "price": 6.5
+        },
+        {
+          "number": 40,
+          "name": "Saganaki",
+          "name_fr": "Saganaki",
+          "name_en": "Saganaki",
+          "description": "Panierter weißer Schafskäse",
+          "description_fr": "Fromage de brebis blanc pané",
+          "description_en": "Breaded white feta cheese",
+          "ingredients": "2",
+          "price": 6.5
+        }
+      ]
+    },
+    {
+      "name": "Beilagen",
+      "name_fr": "Accompagnements",
+      "name_en": "Side dishes",
+      "menu": [
+        {
+          "number": 44,
+          "name": "Pommes frites",
+          "name_fr": "Frites",
+          "name_en": "French fries",
+          "description": "",
+          "description_fr": "",
+          "description_en": "",
+          "ingredients": "",
+          "price": 3.5
+        },
+        {
+          "number": 45,
+          "name": "Tomatenreis",
+          "name_fr": "Riz aux tomates",
+          "name_en": "Tomato rice",
+          "description": "",
+          "description_fr": "",
+          "description_en": "",
+          "ingredients": "",
+          "price": 2.8
+        },
+        {
+          "number": 46,
+          "name": "Pitaa",
+          "name_fr": "Pitaa",
+          "name_en": "Pitaa",
+          "description": "Fladenbrot mit Knoblauch",
+          "description_fr": "Pain pita à l‘ ail",
+          "description_en": "Pita bread with garlic",
+          "ingredients": "n",
+          "price": 3.0
+        }
+      ]
+    },
+    {
+      "name": "Deutsche Gerichte",
+      "name_fr": "Plats allemands",
+      "name_en": "German dishes",
+      "menu": [
+        {
+          "number": 47,
+          "name": "Hähnchenbrustfilet vom Grill",
+          "name_fr": "Filet de poulet grillé",
+          "name_en": "Grilled chicken breast fillet",
+          "description": "mit Kräuterbutter",
+          "description_fr": "avec beurre aux herbes",
+          "description_en": "with herb butter",
+          "ingredients": "2,9,10,c,g,k,m",
+          "price": 16.5
+        },
+        {
+          "number": 52,
+          "name": "Argentinisches Rumpsteak",
+          "name_fr": "Steak de rumsteak argentin",
+          "name_en": "Argentinian rump steak",
+          "description": "mit Kräuterbutter",
+          "description_fr": "avec beurre aux herbes",
+          "description_en": "with herb butter",
+          "ingredients": "2,9,10,c,g,k,m",
+          "price": 24.0
+        }
+      ]
+    },
+    {
+      "name": "Fleischgerichte vom Grill",
+      "name_fr": "Plats de viande grillée",
+      "name_en": "Grilled meat dishes",
+      "menu": [
+        {
+          "number": 60,
+          "name": "Gyros mit Zaziki",
+          "name_fr": "Gyros avec tzatziki",
+          "name_en": "Gyros with tzatziki",
+          "description": "Schweinefleisch",
+          "description_fr": "Porc",
+          "description_en": "Pork",
+          "ingredients": "2,9,c,g,k,m",
+          "price": 14.5
+        },
+        {
+          "number": 61,
+          "name": "Gyros 'Spezial'",
+          "name_fr": "Gyros 'Spécial'",
+          "name_en": "Gyros 'Special'",
+          "description": "Schweinefleisch mit Metaxa Sauce und Käse überbacken",
+          "description_fr": "Porc avec sauce Metaxa et fromage gratiné",
+          "description_en": "Pork with Metaxa sauce and cheese au gratin",
+          "ingredients": "2,9,10,c,g,k,m",
+          "price": 15.5
+        },
+        {
+          "number": 62,
+          "name": "Bifteki - Hacksteak",
+          "name_fr": "Bifteki - Steak haché",
+          "name_en": "Bifteki - minced steak",
+          "description": "Schweinefleisch gefüllt mit Schafskäse und Reibekäse",
+          "description_fr": "Porc farci au fromage de brebis et fromage râpé",
+          "description_en": "Pork filled with feta cheese and grated cheese",
+          "ingredients": "2,9,10,c,g,k,m",
+          "price": 15.5
+        },
+        {
+          "number": 63,
+          "name": "Suflaki",
+          "name_fr": "Souvlaki",
+          "name_en": "Souvlaki",
+          "description": "2 Fleischspieße mit Zaziki",
+          "description_fr": "2 brochettes de viande avec tzatziki",
+          "description_en": "2 meat skewers with tzatziki",
+          "ingredients": "2,9,c,g,k,m",
+          "price": 16.5
+        },
+        {
+          "number": 65,
+          "name": "5 Lammkoteletts",
+          "name_fr": "5 Côtelettes d‘ agneau",
+          "name_en": "5 Lamb chops",
+          "description": "mit Kräuterbutter",
+          "description_fr": "avec beurre aux herbes",
+          "description_en": "with herb butter",
+          "ingredients": "2,9,10,c,g,k,m",
+          "price": 23.0
+        },
+        {
+          "number": 67,
+          "name": "Lammfilets",
+          "name_fr": "Filets d‘ agneau",
+          "name_en": "Lamb fillets",
+          "description": "mit Kräuterbutter",
+          "description_fr": "avec beurre aux herbes",
+          "description_en": "with herb butter",
+          "ingredients": "2,9,10,c,g,k,m",
+          "price": 23.5
+        },
+        {
+          "number": 68,
+          "name": "Schweinefiletspieß mit Gyros",
+          "name_fr": "Brochette de filet de porc avec gyros",
+          "name_en": "Pork fillet skewer with gyros",
+          "description": "vom Schweinelendchen",
+          "description_fr": "de filet de porc",
+          "description_en": "from pork tenderloin",
+          "ingredients": "2,9,c,g,k,m",
+          "price": 17.5
+        },
+        {
+          "number": 69,
+          "name": "Gyros mit 3 Tintenfischringen",
+          "name_fr": "Gyros avec 3 anneaux de calamars",
+          "name_en": "Gyros with 3 squid rings",
+          "description": "",
+          "description_fr": "",
+          "description_en": "",
+          "ingredients": "2,9,10,c,g,k,m,o",
+          "price": 16.5
+        }
+      ]
+    },
+    {
+      "name": "Mixed Teller vom Grill",
+      "name_fr": "Assiette mixte grillée",
+      "name_en": "Mixed plate from the grill",
+      "menu": [
+        {
+          "number": 70,
+          "name": "Kreta Teller",
+          "name_fr": "Assiette Crète",
+          "name_en": "Crete plate",
+          "description": "1 Schweinesteak, 1 Spieß Gyros",
+          "description_fr": "1 steak de porc, 1 brochette de gyros",
+          "description_en": "1 pork steak, 1 gyros skewer",
+          "ingredients": "2,9,10,c,g,k,m",
+          "price": 16.8
+        },
+        {
+          "number": 71,
+          "name": "Artemis Teller",
+          "name_fr": "Assiette Artemis",
+          "name_en": "Artemis plate",
+          "description": "2 Lammkoteletts, Gyros",
+          "description_fr": "2 côtelettes d‘ agneau, gyros",
+          "description_en": "2 lamb chops, gyros",
+          "ingredients": "2,9,10,c,g,k,m",
+          "price": 16.8
+        },
+        {
+          "number": 72,
+          "name": "Lammteller",
+          "name_fr": "Assiette d‘ agneau",
+          "name_en": "Lamb plate",
+          "description": "2 Lammkoteletts, 1 Lammspieß, 1 Lammfilet dazu Kräuterbutter",
+          "description_fr": "2 côtelettes d‘ agneau, 1 brochette d‘ agneau, 1 filet d‘ agneau avec beurre aux herbes",
+          "description_en": "2 lamb chops, 1 lamb skewer, 1 lamb fillet with herb butter",
+          "ingredients": "2,9,10,c,g,k,m",
+          "price": 24.5
+        },
+        {
+          "number": 73,
+          "name": "Hellas Teller",
+          "name_fr": "Assiette Hellas",
+          "name_en": "Hellas plate",
+          "description": "Gyros, 2 Hacksteaks, Zaziki",
+          "description_fr": "Gyros, 2 steaks hachés, tzatziki",
+          "description_en": "Gyros, 2 minced steaks, tzatziki",
+          "ingredients": "2,9,c,g,k,m",
+          "price": 16.4
+        },
+        {
+          "number": 75,
+          "name": "Ouzo Teller",
+          "name_fr": "Assiette Ouzo",
+          "name_en": "Ouzo plate",
+          "description": "1 Fleischspieß, Gyros, 1 Schweinesteak, 1 Hacksteak und ein Ouzo",
+          "description_fr": "1 brochette de viande, gyros, 1 steak de porc, 1 steak haché et un ouzo",
+          "description_en": "1 meat skewer, gyros, 1 pork steak, 1 minced steak and an ouzo",
+          "ingredients": "2,9,c,g,k,m",
+          "price": 17.5
+        },
+        {
+          "number": 76,
+          "name": "Dorfteller",
+          "name_fr": "Assiette du village",
+          "name_en": "Village plate",
+          "description": "1 Fleischspieß, Gyros, 1 Lammkotelett",
+          "description_fr": "1 brochette de viande, gyros, 1 côtelette d‘ agneau",
+          "description_en": "1 meat skewer, gyros, 1 lamb chop",
+          "ingredients": "2,9,c,g,k,m",
+          "price": 16.8
+        },
+        {
+          "number": 78,
+          "name": "Zentauren Teller",
+          "name_fr": "Assiette des centaures",
+          "name_en": "Centaur plate",
+          "description": "Gyros, 1 Fleischspieß",
+          "description_fr": "Gyros, 1 brochette de viande",
+          "description_en": "Gyros, 1 meat skewer",
+          "ingredients": "2,9,c,g,k,m",
+          "price": 15.8
+        },
+        {
+          "number": 79,
+          "name": "Ropoto Teller",
+          "name_fr": "Assiette Ropoto",
+          "name_en": "Ropoto plate",
+          "description": "2 Clamariringe, 1 Schweinesteak, Gyros, Zaziki",
+          "description_fr": "2 anneaux de calamars, 1 steak de porc, gyros, tzatziki",
+          "description_en": "2 squid rings, 1 pork steak, gyros, tzatziki",
+          "ingredients": "2,9,c,g,k,m,o",
+          "price": 16.3
+        },
+        {
+          "number": 80,
+          "name": "Alexander Teller",
+          "name_fr": "Assiette Alexandre",
+          "name_en": "Alexander plate",
+          "description": "2 Fleischspieße vom Schweinefilet an Rahmsauce",
+          "description_fr": "2 brochettes de filet de porc à la sauce à la crème",
+          "description_en": "2 pork fillet skewers with cream sauce",
+          "ingredients": "2,9,c,g,k,m",
+          "price": 17.8
+        },
+        {
+          "number": 81,
+          "name": "Fino Teller",
+          "name_fr": "Assiette Fino",
+          "name_en": "Fino plate",
+          "description": "Gyros, 1 Steak, 1 Lammkotelett",
+          "description_fr": "Gyros, 1 steak, 1 côtelette d‘ agneau",
+          "description_en": "Gyros, 1 steak, 1 lamb chop",
+          "ingredients": "2,9,c,g,k,m",
+          "price": 15.4
+        },
+        {
+          "number": 82,
+          "name": "Mykonos Teller",
+          "name_fr": "Assiette Mykonos",
+          "name_en": "Mykonos plate",
+          "description": "1 Hacksteak, 1 Fleischspieß, 1 Lammkotelett, Gyros, Zaziki",
+          "description_fr": "1 steak haché, 1 brochette de viande, 1 côtelette d‘ agneau, gyros, tzatziki",
+          "description_en": "1 minced steak, 1 meat skewer, 1 lamb chop, gyros, tzatziki",
+          "ingredients": "2,9,c,g,k,m",
+          "price": 17.5
+        }
+      ]
+    },
+    {
+      "name": "Aus dem Ofen",
+      "name_fr": "Du four",
+      "name_en": "From the oven",
+      "menu": [
+        {
+          "number": 98,
+          "name": "Moussaka",
+          "name_fr": "Moussaka",
+          "name_en": "Moussaka",
+          "description": "Hackfleisch, Kartoffeln, Auberginen, Zucchini mit Bechamelsauce überzogen und gem. Salat",
+          "description_fr": "Viande hachée, pommes de terre, aubergines, courgettes recouvertes de sauce béchamel et salade mixte",
+          "description_en": "Minced meat, potatoes, aubergines, courgettes covered with bechamel sauce and mixed salad",
+          "ingredients": "2,9,c,g,k,m",
+          "price": 16.5
+        }
+      ]
+    },
+    {
+      "name": "Lammfleisch im Steingut serviert",
+      "name_fr": "Viande d‘ agneau servie dans un pot en pierre",
+      "name_en": "Lamb served in a stone pot",
+      "menu": [
+        {
+          "number": 103,
+          "name": "Lammhaxe mit Pommes",
+          "name_fr": "Jarret d‘ agneau avec frites",
+          "name_en": "Lamb shank with french fries",
+          "description": "dazu gem. Salat",
+          "description_fr": "avec salade mixte",
+          "description_en": "with mixed salad",
+          "ingredients": "2,9,c,g,k,m",
+          "price": 16.0
+        },
+        {
+          "number": 104,
+          "name": "Lammhaxe mit Auberginen",
+          "name_fr": "Jarret d‘ agneau avec aubergines",
+          "name_en": "Lamb shank with aubergines",
+          "description": "dazu gem. Salat",
+          "description_fr": "avec salade mixte",
+          "description_en": "with mixed salad",
+          "ingredients": "2,9,c,g,k,m",
+          "price": 17.0
+        },
+        {
+          "number": 106,
+          "name": "Lammhaxe mit Riesenbohnen",
+          "name_fr": "Jarret d‘ agneau avec haricots géants",
+          "name_en": "Lamb shank with giant beans",
+          "description": "dazu gem. Salat",
+          "description_fr": "avec salade mixte",
+          "description_en": "with mixed salad",
+          "ingredients": "2,9,c,g,k,m",
+          "price": 17.0
+        },
+        {
+          "number": 107,
+          "name": "Lammhaxe mit grünen Bohnen",
+          "name_fr": "Jarret d‘ agneau avec haricots verts",
+          "name_en": "Lamb shank with green beans",
+          "description": "dazu gem. Salat",
+          "description_fr": "avec salade mixte",
+          "description_en": "with mixed salad",
+          "ingredients": "2,9,c,g,k,m",
+          "price": 17.0
+        }
+      ]
+    },
+    {
+      "name": "Pfannengerichte",
+      "name_fr": "Plats de poêle",
+      "name_en": "Pan dishes",
+      "menu": [
+        {
+          "number": 111,
+          "name": "Hähnchenbrustfilet",
+          "name_fr": "Filet de poulet",
+          "name_en": "Chicken breast fillet",
+          "description": "mit Metaxa Sauce",
+          "description_fr": "avec sauce Metaxa",
+          "description_en": "with Metaxa sauce",
+          "ingredients": "2,9,10,c,g,k,m",
+          "price": 16.5
+        },
+        {
+          "number": 112,
+          "name": "Gyrospfanne",
+          "name_fr": "Poêle de gyros",
+          "name_en": "Gyros pan",
+          "description": "mit Metaxa Sauce",
+          "description_fr": "avec sauce Metaxa",
+          "description_en": "with Metaxa sauce",
+          "ingredients": "2,9,10,c,g,k,m",
+          "price": 15.5
+        },
+        {
+          "number": 115,
+          "name": "Lammfiletstücke",
+          "name_fr": "Morceaux de filet d‘ agneau",
+          "name_en": "Lamb fillet pieces",
+          "description": "mit Metaxa Sauce",
+          "description_fr": "avec sauce Metaxa",
+          "description_en": "with Metaxa sauce",
+          "ingredients": "2,9,10,c,g,k,m",
+          "price": 24.5
+        },
+        {
+          "number": 117,
+          "name": "Gyrospfanne",
+          "name_fr": "Poêle de gyros",
+          "name_en": "Gyros pan",
+          "description": "mit Rahmsauce",
+          "description_fr": "avec sauce à la crème",
+          "description_en": "with cream sauce",
+          "ingredients": "2,9,10,c,g,k,m",
+          "price": 15.5
+        }
+      ]
+    },
+    {
+      "name": "Fischgerichte",
+      "name_fr": "Plats de poisson",
+      "name_en": "Fish dishes",
+      "menu": [
+        {
+          "number": 123,
+          "name": "Seezungenfilet mit Mehl paniert",
+          "name_fr": "Filet de sole pané à la farine",
+          "name_en": "Sole fillet breaded with flour",
+          "description": "dazu gem. Sala, Zaziki und Bitterreis",
+          "description_fr": "avec salade mixte, tzatziki et riz amer",
+          "description_en": "with mixed salad, tzatziki and bitter rice",
+          "ingredients": "2,9,c,g,k,m",
+          "price": 17.5
+        },
+        {
+          "number": 124,
+          "name": "Scampis 'Griechische Art'",
+          "name_fr": "Scampis 'à la grecque'",
+          "name_en": "Scampis 'Greek style'",
+          "description": "dazu gem. Salat, Zaziki und Bitterreis",
+          "description_fr": "avec salade mixte, tzatziki et riz amer",
+          "description_en": "with mixed salad, tzatziki and bitter rice",
+          "ingredients": "2,9,c,g,k,m,d,0",
+          "price": 22.5
+        },
+        {
+          "number": 125,
+          "name": "Calamariringe paniert",
+          "name_fr": "Anneaux de calamars panés",
+          "name_en": "Breaded squid rings",
+          "description": "dazu gem. Salat, Zaziki und Bitterreis",
+          "description_fr": "avec salade mixte, tzatziki et riz amer",
+          "description_en": "with mixed salad, tzatziki and bitter rice",
+          "ingredients": "2,9,c,g,k,d,0",
+          "price": 17.0
+        },
+        {
+          "number": 126,
+          "name": "Poseidon Teller",
+          "name_fr": "Assiette Poséidon",
+          "name_en": "Poseidon plate",
+          "description": "2 Scampis, 4 Clamariringe und 1 Seezungenfilet",
+          "description_fr": "2 scampis, 4 anneaux de calamars et 1 filet de sole",
+          "description_en": "2 scampis, 4 squid rings and 1 sole fillet",
+          "ingredients": "2,9,c,g,k,m,d,0",
+          "price": 21.0
+        }
+      ]
+    },
+    {
+      "name": "Nur für unsere Kleinen Gäste",
+      "name_fr": "Seulement pour nos petits invités",
+      "name_en": "Only for our little guests",
+      "menu": [
+        {
+          "number": 130,
+          "name": "Asterix",
+          "name_fr": "Asterix",
+          "name_en": "Asterix",
+          "description": "Gyros mit Hacksteak und Pommes",
+          "description_fr": "Gyros avec steak haché et frites",
+          "description_en": "Gyros with minced steak and french fries",
+          "ingredients": "2,9,10,m",
+          "price": 8.0
+        },
+        {
+          "number": 131,
+          "name": "Schneewittchen",
+          "name_fr": "Blanche-Neige",
+          "name_en": "Snow White",
+          "description": "Kleines Schweinesteak, Gyros, Pommes",
+          "description_fr": "Petit steak de porc, gyros, frites",
+          "description_en": "Small pork steak, gyros, french fries",
+          "ingredients": "2,9,10,m",
+          "price": 8.0
+        },
+        {
+          "number": 132,
+          "name": "Rumpelstilzechen",
+          "name_fr": "Rumpelstilzechen",
+          "name_en": "Rumpelstilzechen",
+          "description": "2 kleine Schweinesteaks mit Pommes",
+          "description_fr": "2 petits steaks de porc avec frites",
+          "description_en": "2 small pork steaks with french fries",
+          "ingredients": "2,9,10,m",
+          "price": 8.0
+        },
+        {
+          "number": 133,
+          "name": "Rotkäppchen",
+          "name_fr": "Le petit chaperon rouge",
+          "name_en": "Little Red Riding Hood",
+          "description": "Fleischspieß mit Pommes",
+          "description_fr": "Brochette de viande avec frites",
+          "description_en": "Meat skewer with french fries",
+          "ingredients": "2,9,10,m",
+          "price": 8.0
+        },
+        {
+          "number": 134,
+          "name": "Dornröschen",
+          "name_fr": "La belle au bois dormant",
+          "name_en": "Sleeping Beauty",
+          "description": "Panniertes Schweineschnitzel mit Pommes",
+          "description_fr": "Escalope de porc panée avec frites",
+          "description_en": "Breaded pork escalope with french fries",
+          "ingredients": "2,9,10,m",
+          "price": 8.0
+        },
+        {
+          "number": 135,
+          "name": "Kleines Gyros",
+          "name_fr": "Petit gyros",
+          "name_en": "Small gyros",
+          "description": "mit Pommes",
+          "description_fr": "avec frites",
+          "description_en": "with french fries",
+          "ingredients": "2,9,10,m",
+          "price": 8.0
+        },
+        {
+          "number": 136,
+          "name": "5 Calamariringe (Tintenfisch)",
+          "name_fr": "5 anneaux de calamars (calmar)",
+          "name_en": "5 squid rings (squid)",
+          "description": "mit Pommes",
+          "description_fr": "avec frites",
+          "description_en": "with french fries",
+          "ingredients": "2,9,10,m,d,0",
+          "price": 9.0
+        }
+      ]
+    }
+  ]
+}

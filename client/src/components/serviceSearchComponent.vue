@@ -6,6 +6,7 @@
       placeholder="Leistung Suchen"
       @focus="showSearchResults = true"
       @blur="hideSearchBar"
+      @change="emitName"
     />
     <div class="results" v-if="showSearchResults">
       <div
@@ -53,7 +54,7 @@ export default {
     },
     getServices() {
       axios
-        .get("http://127.0.0.1:8000/api/services")
+        .get("/api/services")
         .then((response) => {
           this.services = response.data;
         })
@@ -66,6 +67,9 @@ export default {
       this.search = service.service_name;
       this.$emit("selectedService", this.selectedService, this.index);
       this.showSearchResults = false;
+    },
+    emitName() {
+      this.$emit("setService", this.search, this.index);
     },
     getData() {
       return this.selectedService;

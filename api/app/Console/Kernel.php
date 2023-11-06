@@ -12,7 +12,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        // Andere Befehle hier ...
+        $schedule->command('generate-recurring-invoices')->everyMinute()->appendOutputTo(storage_path('logs/inspire.log'));;
+        $schedule->command('sanctum:prune-expired --hours=24')->daily();
     }
 
     /**

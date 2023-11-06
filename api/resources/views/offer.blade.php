@@ -115,6 +115,7 @@
       @endif
       <p>{{ $offer->customer->customer_name }}</p>
       <p>{{ $offer->customer->customer_street }}</p>
+      <p>{{ $offer->customer->customer_address }}</p>
       <p>{{ $offer->customer->customer_zip }} {{ $offer->customer->customer_city }}</p>
     </div>
 
@@ -245,7 +246,7 @@
     @endif
 
     @if($offer->invoice_afterword)
-    <p>{{ $offer->invoice_afterword }}</p>
+    <p>{!! $offer->invoice_afterword !!}</p>
     @endif
 
 

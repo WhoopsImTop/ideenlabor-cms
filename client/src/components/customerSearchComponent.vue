@@ -4,11 +4,24 @@
       class="border-2 rounded border-solid p-2 w-full"
       placeholder="Name des Kunden"
       v-model="customer_name"
+      @focus="showSearchResults = true"
+      @blur="hideSearchBar"
     />
-    <div class="customer_search_resultes" v-if="selectedCustomer === null">
-        <div class="result" v-for="result in filteredCustomers" :key="result.customer_number" @click="selectCustomer(result)">
-            <p>{{ result.customer_name }}</p>
-        </div>
+    <div class="customer_search_resultes" v-if="showSearchResults">
+      <div
+        class="result"
+        v-for="result in filteredCustomers"
+        :key="result.customer_number"
+        @click="selectCustomer(result)"
+      >
+        <p>
+          {{
+            result.customer_company_name != ""
+              ? result.customer_company_name
+              : result.customer_name
+          }}
+        </p>
+      </div>
     </div>
   </div>
 </template>
@@ -21,30 +34,44 @@ export default {
       customer_name: "",
       customers: [],
       selectedCustomer: null,
+      showSearchResults: false,
     };
   },
   computed: {
     filteredCustomers() {
       return this.customers.filter((customer) => {
         return customer.customer_name
-          .toLowerCase()
-          .includes(this.customer_name.toLowerCase());
+          ? customer.customer_name
+              .toLowerCase()
+              .includes(this.customer_name.toLowerCase())
+          : "" || customer.customer_company_name
+          ? customer.customer_company_name
+              .toLowerCase()
+              .includes(this.customer_name.toLowerCase())
+          : "";
       });
     },
   },
   methods: {
+    hideSearchBar() {
+      setTimeout(() => {
+        this.showSearchResults = false;
+      }, 200);
+    },
     getData() {
-        return this.customer_name;
+      return this.customer_name;
     },
     selectCustomer(customer) {
-        this.customer_name = customer.customer_name;
-        this.selectedCustomer = customer;
-        this.$emit("customerSelected", customer);
+      this.customer_name = customer.customer_company_name
+        ? customer.customer_company_name
+        : customer.customer_name;
+      this.selectedCustomer = customer;
+      this.$emit("customerSelected", customer);
     },
   },
   beforeMount() {
     axios
-      .get("http://127.0.0.1:8000/api/customers")
+      .get("/api/customers")
       .then((response) => {
         console.log(response.data.data);
         this.customers = response.data.data;
@@ -58,24 +85,24 @@ export default {
 
 <style>
 .customer_search {
-    position: relative;
-    width: 100%;
+  position: relative;
+  width: 100%;
 }
 
 .customer_search_resultes {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    background-color: white;
-    border: 1px solid black;
-    max-height: 200px;
-    overflow-y: scroll;
-    border-radius: 5px;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background-color: white;
+  border: 1px solid black;
+  max-height: 200px;
+  overflow-y: scroll;
+  border-radius: 5px;
 }
 
 .customer_search_resultes .result {
-    padding: 10px;
-    border-bottom: 1px solid black;
+  padding: 10px;
+  border-bottom: 1px solid black;
 }
 </style>

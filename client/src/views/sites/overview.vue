@@ -4,7 +4,7 @@
       <h1>Seiten</h1>
       <router-link
         class="btn px-4 py-2 rounded bg-blue-600 text-white"
-        to="/pages/create"
+        to="/cms/pages/create"
         >Seite erstellen</router-link
       >
     </div>
@@ -16,6 +16,12 @@
           </th>
           <th class="px-6 py-3 text-left text-xs font-bold text-black">
             URL-Pfad
+          </th>
+          <th class="px-6 py-3 text-left text-xs font-bold text-black">
+            Kollektion
+          </th>
+          <th class="px-6 py-3 text-left text-xs font-bold text-black">
+            zuletzt Bearbeitet
           </th>
           <th class="px-6 py-3 text-left text-xs font-bold text-black">
             Aktionen
@@ -31,9 +37,15 @@
             {{ page.slug }}
           </td>
           <td class="px-6 py-3 text-left text-xs font-bold text-black">
+            {{ page.collection }}
+          </td>
+          <td class="px-6 py-3 text-left text-xs font-bold text-black">
+            {{ new Date(page.updated_at).toLocaleString("de-DE") }}
+          </td>
+          <td class="px-6 py-3 text-left text-xs font-bold text-black">
             <router-link
               class="btn px-4 py-2 rounded bg-blue-600 text-white"
-              :to="`/pages/${page.id}`"
+              :to="`/cms/pages/${page.id}`"
               >Bearbeiten</router-link
             >
           </td>
@@ -53,15 +65,24 @@ export default {
   },
   methods: {
     async getPages() {
-      try {
-        const response = await axios.get("http://127.0.0.1:8000/api/sites");
-        this.pages = response.data.data;
-      } catch (error) {
-        console.log(error);
-      }
+      axios
+        .get("/api/sites")
+        .then((response) => {
+          this.pages = response.data.data;
+        })
+        .catch((err) => {
+          if (err.response.data.message == "Unauthenticated.") {
+            this.$router.push("/cms/login");
+          } else {
+            window.alert(
+              "Es ist ein Fehler aufgetreten",
+              err.response.data.message
+            );
+          }
+        });
     },
   },
-  beforeMount() {
+  created() {
     this.getPages();
   },
 };

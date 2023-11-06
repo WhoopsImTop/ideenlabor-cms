@@ -56,7 +56,22 @@ class ImageController extends Controller
      */
     public function update(UpdateImageRequest $request, Image $image)
     {
-        //
+        // Validiere den Request, um sicherzustellen, dass ein Bild hochgeladen wurde
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Maximale Dateigröße: 2MB
+        ]);
+
+        // Speichere das hochgeladene Bild im public/images-Verzeichnis
+        $imageName = time() . '.' . $request->image->extension();
+        $request->image->move(public_path('images'), $imageName);
+
+        //store image name in database
+        $image->update([
+            'src' => $imageName,
+            'title' => $request->title
+        ]);
+
+        return ImageResource::make($image);
     }
 
     /**

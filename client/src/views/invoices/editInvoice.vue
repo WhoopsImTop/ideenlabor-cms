@@ -6,11 +6,16 @@
       <div class="grid grid-cols-2 gap-16 py-4">
         <div class="col-span-1">
           <div class="flex flex-col">
+            <customer-search-component
+              v-if="!invoice.customer_number"
+              ref="customerSelect"
+              @customerSelected="setCutomerData"
+            />
             <input
-              type="text"
-              v-model="customer.customer_name"
-              placeholder="Name des Kunden"
+              v-else
               class="border-2 rounded border-solid p-2"
+              type="search"
+              v-model="customer.customer_name"
             />
           </div>
           <div class="flex flex-col my-2">
@@ -162,18 +167,14 @@
             </div>
             <div class="divTableCell" style="width: 35%">
               <serviceSearchComponent
-                v-if="!position.name"
+                v-if="position.name == ''"
                 ref="service"
                 :index="index"
                 v-model="position.name"
                 @selectedService="setPositionData"
+                @setService="setService"
               ></serviceSearchComponent>
-              <input
-                v-else
-                type="text"
-                v-model="position.name"
-                @focus="$event.target.select()"
-              />
+              <input v-else type="search" v-model="position.name" />
             </div>
             <div class="divTableCell" style="width: 10%">
               <input
@@ -304,7 +305,7 @@
           />
         </div>
         <div class="flex flex-col col-span-2">
-          <label>Zahlungsziel</label>
+          <label>Zahlbar in</label>
           <select
             @change="updatePaymentConditions"
             class="border-2 rounded border-solid p-2"
@@ -319,12 +320,12 @@
       <div class="py-4">
         <div class="flex flex-col mt-4">
           <label>Nachbemerkung</label>
-          <input
+          <textarea
             class="border-2 rounded border-solid p-2 w-full"
             ref="afterword"
             v-model="invoice.invoice_afterword"
             placeholder="Nachbemerkung"
-          />
+          ></textarea>
         </div>
       </div>
     </div>
@@ -448,7 +449,7 @@ export default {
         },
       },
       unitOptions: [
-        { value: "Stunde", text: "Stunde" },
+        { value: "Stunden", text: "Stunden" },
         { value: "Stück", text: "Stück" },
         { value: "Tag", text: "Tag" },
         { value: "Monat", text: "Monat" },
@@ -493,6 +494,9 @@ export default {
     },
   },
   methods: {
+    setService(data, index) {
+      this.invoice.invoice_positions[index].name = data;
+    },
     setPositionData(data, index) {
       this.invoice.invoice_positions[index].name = data.service_name;
       this.invoice.invoice_positions[index].description =
@@ -517,7 +521,7 @@ export default {
       let thus = this;
       return new Promise(function (resolve, reject) {
         axios
-          .post("http://127.0.0.1:8000/api/customers", thus.customer)
+          .post("/api/customers", thus.customer)
           .then((res) => {
             resolve(res.data.data);
           })
@@ -530,10 +534,16 @@ export default {
       this.createDraftInvoiceButtonText = "Speichern...";
       if (this.validateInvoice()) {
         if (!this.customer.customer_number) {
-          let customer = await this.generateCustomer().then((customer) => {
-            console.log(customer);
-            return customer;
-          });
+          let customer = await this.generateCustomer()
+            .then((customer) => {
+              console.log(customer);
+              return customer;
+            })
+            .catch((err) => {
+              window.alert(
+                `Fehler beim erstellen des Kunden. Bitte überprüfe deine Eingabe`
+              );
+            });
           this.customer = customer;
           this.invoice.customer_id = customer.id;
           this.invoice.customer_number = customer.customer_number;
@@ -555,8 +565,7 @@ export default {
         });
         axios
           .patch(
-            "http://127.0.0.1:8000/api/invoices/" +
-              this.$route.params.invoice_number,
+            "/api/invoices/" + this.$route.params.invoice_number,
             this.invoice
           )
           .then((res) => {
@@ -580,10 +589,16 @@ export default {
       this.createInvoiceButtonText = "Rechnung wird erstellt...";
       if (this.validateInvoice()) {
         if (!this.customer.customer_number) {
-          let customer = await this.generateCustomer().then((customer) => {
-            console.log(customer);
-            return customer;
-          });
+          let customer = await this.generateCustomer()
+            .then((customer) => {
+              console.log(customer);
+              return customer;
+            })
+            .catch((err) => {
+              window.alert(
+                `Fehler beim erstellen des Kunden. Bitte überprüfe deine Eingabe`
+              );
+            });
           this.customer = customer;
           this.invoice.customer_id = customer.id;
           this.invoice.customer_number = customer.customer_number;
@@ -599,6 +614,15 @@ export default {
         } else {
           this.invoice.invoice_delivery_date = "";
         }
+        //replace all linebreaks with <br /> and wrap each line in <p> tags in invoice_afterword if there is a linebreak
+        if (this.invoice.invoice_afterword) {
+          this.invoice.invoice_afterword = this.invoice.invoice_afterword
+            .replace(/\r?\n/g, "<br />")
+            .split("<br />")
+
+            .map((line) => `<p>${line}</p>`)
+            .join("");
+        }
 
         this.invoice.invoice_positions.forEach((element) => {
           //replace linebreaks and wrap in <p> tags around each line
@@ -610,12 +634,13 @@ export default {
         });
         axios
           .patch(
-            "http://127.0.0.1:8000/api/invoices/" +
-              this.$route.params.invoice_number,
+            "/api/invoices/" + this.$route.params.invoice_number,
             this.invoice
           )
           .then((res) => {
-            this.$router.push("/send-invoice/" + res.data.data.invoice_number);
+            this.$router.push(
+              "/cms/send-invoice/" + res.data.data.invoice_number
+            );
           })
           .catch((err) => {
             this.createInvoiceButtonText =
@@ -697,24 +722,22 @@ export default {
 
       // Calculate the due date based on the selected payment term
       dueDate.setDate(dueDate.getDate() + parseInt(this.zahlungsziel));
+
+      let formattedDate = dueDate.toISOString().slice(0, 10);
+      this.invoice.invoice_due_date = formattedDate;
       return dueDate.toLocaleDateString("de-DE");
     },
   },
-  beforeMount() {
-    axios
-      .get(
-        "http://127.0.0.1:8000/api/invoices/" +
-          this.$route.params.invoice_number
-      )
+  async created() {
+    await axios
+      .get("/api/invoices/" + this.$route.params.invoice_number)
       .then((res) => {
         this.invoice = res.data.data;
         this.invoice.invoice_positions = JSON.parse(
           this.invoice.invoice_positions
-        );
+        ) || [];
         this.customer = res.data.data.customer;
         //get leistungszeitraum and parse dates from date - date
-        const leistungszeitraum =
-          this.invoice.invoice_delivery_date.split(" - ");
 
         this.invoice.invoice_payment_condition = `Zahlbar innerhalb von ${
           this.zahlungsziel
@@ -722,9 +745,15 @@ export default {
 
         this.invoice.invoice_due_date = this.calculatePaymentDate();
         //parse dates to iso string
-      })
-      .catch((err) => {
-        console.log(err);
+        this.invoice.invoice_positions.forEach((element) => {
+          element.description = element.description
+            .replace(/<p>/g, "\n")
+            .replace(/<\/p>/g, "");
+          //first line break is not needed
+          if (element.description.startsWith("\n")) {
+            element.description = element.description.substring(1);
+          }
+        });
       });
   },
   mounted() {

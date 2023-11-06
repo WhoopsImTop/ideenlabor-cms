@@ -8,11 +8,13 @@
         v-model="searchInvoice"
         placeholder="Suchen"
       />
-      <router-link
-        class="btn px-4 py-2 rounded bg-blue-600 text-white"
-        to="/create-invoice"
-        >Neue Rechnung</router-link
-      >
+      <div>
+        <router-link
+          class="btn px-4 py-2 rounded bg-blue-600 text-white"
+          to="/cms/create-invoice"
+          >Neue Rechnung</router-link
+        >
+      </div>
     </div>
     <div class="mt-10 grid grid-cols-6">
       <div :class="tableActions ? ' col-span-4' : 'col-span-6'">
@@ -46,7 +48,11 @@
               <td
                 class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-black"
               >
-                {{ invoice.customer.customer_name }}
+                {{
+                  invoice.customer.customer_name
+                    ? invoice.customer.customer_name
+                    : invoice.customer.customer_company_name
+                }}
               </td>
               <td
                 class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-black"
@@ -64,24 +70,25 @@
               >
                 <p>
                   {{
-                    new Date(invoice.invoice_due_date).toLocaleDateString(
-                      "DE-de",
-                      {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      }
-                    )
+                    new Date(
+                      parseDate(invoice.invoice_due_date)
+                    ).toLocaleDateString("DE-de", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })
                   }}
                 </p>
                 <p
                   v-if="
                     new Date() >
-                    new Date(
-                      new Date(invoice.invoice_due_date).setDate(
-                        new Date(invoice.invoice_due_date).getDate() + 1
-                      )
-                    )
+                      new Date(
+                        new Date(parseDate(invoice.invoice_due_date)).setDate(
+                          new Date(
+                            parseDate(invoice.invoice_due_date)
+                          ).getDate() + 1
+                        )
+                      ) && invoice.invoice_status != 'bezahlt'
                   "
                 >
                   <span class="text-red-500 mr-1">überfällig</span>
@@ -120,6 +127,9 @@
           <div class="edit" @click="editInvoice(activeInvoice)">
             <img width="20" src="../../assets/edit.svg" alt="edit" />
           </div>
+          <div class="edit" @click="setAsPayed(activeInvoice)">
+            <img width="20" src="../../assets/payed.svg" alt="check" />
+          </div>
           <div class="delete" @click="deleteInvoice(activeInvoice)">
             <img width="20" src="../../assets/delete.svg" alt="delete" />
           </div>
@@ -132,7 +142,10 @@
             width="100%"
             height="200px"
             frameborder="0"
-            :src="'http://127.0.0.1:8000/' + activeInvoice.invoice_path"
+            :src="
+              'https://ideenlabor-agentur.de/api/public/' +
+              activeInvoice.invoice_path
+            "
           ></iframe>
         </div>
         <div class="flex flex-col p-4">
@@ -152,10 +165,10 @@
               })
             }}</span
           >
-          <span v-if="activeInvoice.invoice_mail_date" class="text-right"
+          <span v-if="activeInvoice.invoice_send_date" class="text-right"
             >Versendet am
             {{
-              new Date(activeInvoice.invoice_mail_date).toLocaleDateString(
+              new Date(activeInvoice.invoice_send_date).toLocaleDateString(
                 "DE-de",
                 {
                   year: "numeric",
@@ -165,6 +178,7 @@
               )
             }}</span
           >
+          <span v-else class="text-right">Noch nicht versendet</span>
           <hr
             style="width: 100%; margin: 20px auto; border: 1px solid #dddddd"
           />
@@ -228,18 +242,41 @@ export default {
       this.tableActions = true;
       this.activeInvoice = invoice;
     },
+    parseDate(date) {
+      //format d.m.yyyy to yyyy-mm-dd
+      let dateArray = date.split(".");
+      return dateArray[2] + "-" + dateArray[1] + "-" + dateArray[0];
+    },
     editInvoice(invoice) {
       this.$router.push({
         name: "editInvoice",
         params: { invoice_number: invoice.invoice_number },
       });
     },
+    setAsPayed(invoice) {
+      if (confirm("Wurde diese Rechnung bezahlt?")) {
+        axios
+          .patch("/api/invoices/" + invoice.invoice_number + '?update_status=1', {
+            invoice_status: "bezahlt",
+          })
+          .then((response) => {
+            this.tableInvoiceData = this.tableInvoiceData.map((item) => {
+              if (item.invoice_number === invoice.invoice_number) {
+                item.invoice_status = "bezahlt";
+              }
+              return item;
+            });
+            this.tableActions = false;
+          })
+          .catch((error) => {
+            window.alert("Es ist ein Fehler aufgetreten");
+          });
+      }
+    },
     deleteInvoice(invoice) {
       if (confirm("Wollen Sie die Rechnung wirklich löschen?")) {
         axios
-          .delete(
-            "http://127.0.0.1:8000/api/invoices/" + invoice.invoice_number
-          )
+          .delete("/api/invoices/" + invoice.invoice_number)
           .then((response) => {
             this.tableInvoiceData = this.tableInvoiceData.filter(
               (item) => item.invoice_number !== invoice.invoice_number
@@ -247,36 +284,45 @@ export default {
             this.tableActions = false;
           })
           .catch((error) => {
-            console.log(error);
+            window.alert("Es ist ein Fehler aufgetreten");
           });
       }
     },
   },
   computed: {
     filteredInvoices() {
-      return this.tableInvoiceData.filter((invoice) => {
-        return (
-          invoice.invoice_number
-            .toLowerCase()
-            .includes(this.searchInvoice.toLowerCase()) ||
-          invoice.customer.customer_name
-            .toLowerCase()
-            .includes(this.searchInvoice.toLowerCase()) ||
-          invoice.invoice_status
-            .toLowerCase()
-            .includes(this.searchInvoice.toLowerCase())
-        );
-      });
+      return this.tableInvoiceData
+        .filter((invoice) => {
+          return (
+            invoice.invoice_number
+              .toLowerCase()
+              .includes(this.searchInvoice.toLowerCase()) ||
+            invoice.customer.customer_name
+              .toLowerCase()
+              .includes(this.searchInvoice.toLowerCase()) ||
+            invoice.invoice_status
+              .toLowerCase()
+              .includes(this.searchInvoice.toLowerCase())
+          );
+        })
+        .reverse();
     },
   },
-  beforeMount() {
+  created() {
     axios
-      .get("http://127.0.0.1:8000/api/invoices")
+      .get("/api/invoices")
       .then((response) => {
         this.tableInvoiceData = response.data.data;
       })
-      .catch((error) => {
-        console.log(error);
+      .catch((err) => {
+        if (err.response.data.message == "Unauthenticated.") {
+          this.$router.push("/cms/login");
+        } else {
+          window.alert(
+            "Es ist ein Fehler aufgetreten",
+            err.response.data.message
+          );
+        }
       });
   },
 };

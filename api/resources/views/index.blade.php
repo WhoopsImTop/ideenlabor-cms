@@ -113,9 +113,18 @@
       @if($invoice->customer->customer_company_name)
       <p>{{ $invoice->customer->customer_company_name }}</p>
       @endif
+      @if($invoice->customer->customer_name)
       <p>{{ $invoice->customer->customer_name }}</p>
+      @endif
+      @if($invoice->customer->customer_street)
       <p>{{ $invoice->customer->customer_street }}</p>
+      @endif
+      @if($invoice->customer->customer_address)
+      <p>{{ $invoice->customer->customer_address }}</p>
+      @endif
+      @if($invoice->customer->customer_zip)
       <p>{{ $invoice->customer->customer_zip }} {{ $invoice->customer->customer_city }}</p>
+      @endif
     </div>
 
     <h1>{{ $invoice->invoice_title }}</h1>
@@ -137,24 +146,13 @@
           <td>{{ date('d.m.y', strtotime($invoice->invoice_date)) }}</td>
           @if($invoice->invoice_delivery_date)
           <td>
-            @if(is_numeric($invoice->invoice_delivery_date))
-            {{ date('d.m.y', $invoice->invoice_delivery_date) }}
-            @else
             {{ date('d.m.y', strtotime($invoice->invoice_delivery_date)) }}
-            @endif
           </td>
           @else
-          <td>@if(is_numeric($invoice->invoice_delivery_start_date))
-            {{ date('d.m.y', $invoice->invoice_delivery_start_date) }}
-            @else
-            {{ date('d.m.y', strtotime($invoice->invoice_delivery_end_date)) }}
-            @endif
+          <td>
+            {{ date('d.m.y', strtotime($invoice->invoice_delivery_start_date)) }}
             -
-            @if(is_numeric($invoice->invoice_delivery_end_date))
-            {{ date('d.m.y', $invoice->invoice_delivery_end_date) }}
-            @else
             {{ date('d.m.y', strtotime($invoice->invoice_delivery_end_date)) }}
-            @endif
           </td>
           @endif
         </tr>
@@ -169,6 +167,7 @@
           <th>Menge</th>
           <th>Einheit</th>
           <th>Einzel €</th>
+          <th>Rabatt %</th>
           <th style="text-align: right">Gesamt €</th>
         </tr>
       </thead>
@@ -191,6 +190,15 @@
           <td style="vertical-align: top">
             <p>{{ $invoice_position->price }}</p>
           </td>
+          @if($invoice_position->discount)
+          <td style="vertical-align: top">
+            <p>{{ $invoice_position->discount }}</p>
+          </td>
+          @else
+          <td style="vertical-align: top">
+            <p>0</p>
+          </td>
+          @endif
           <td style="vertical-align: top; text-align: right">
             <p>{{ number_format($invoice_position->amount, 2, ',', '.') }}</p>
           </td>
@@ -198,7 +206,7 @@
         @endforeach
 
         <tr>
-          <td colspan="5">Zwischensumme</td>
+          <td colspan="6">Zwischensumme</td>
           <td style="text-align: right">
             {{ number_format($invoice->invoice_subtotal, 2, ',', '.') }} €
           </td>
@@ -206,7 +214,7 @@
 
         @if($invoice->invoice_discount)
         <tr>
-          <td colspan="5">Rabatt</td>
+          <td colspan="6">Rabatt</td>
           <td style="text-align: right">
             {{ number_format($invoice->invoice_shipping, 2, ',', '.') }} €
           </td>
@@ -215,7 +223,7 @@
 
         @if($invoice->invoice_shipping)
         <tr>
-          <td colspan="5">Versandkosten</td>
+          <td colspan="6">Versandkosten</td>
           <td style="text-align: right">
             {{ number_format($invoice->invoice_shipping, 2, ',', '.') }} €
           </td>
@@ -224,7 +232,7 @@
 
         @if($invoice->invoice_tax)
         <tr>
-          <td colspan="5">MwSt. 19%</td>
+          <td colspan="6">MwSt. 19%</td>
           <td style="text-align: right">
             {{ number_format($invoice->invoice_tax, 2, ',', '.') }} €
           </td>
@@ -232,7 +240,7 @@
         @endif
 
         <tr>
-          <td colspan="5">Gesamtsumme</td>
+          <td colspan="6">Gesamtsumme</td>
           <td style="text-align: right">
             {{ number_format($invoice->invoice_total, 2, ',', '.') }} €
           </td>
@@ -245,9 +253,8 @@
     @endif
 
     @if($invoice->invoice_afterword)
-    <p>{{ $invoice->invoice_afterword }}</p>
+    <p>{!! $invoice->invoice_afterword !!}</p>
     @endif
-
 
     <!-- create a footer table with the companyData -->
     @if($companyData)

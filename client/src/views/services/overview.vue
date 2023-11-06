@@ -91,18 +91,25 @@ export default {
   components: {
     servicePopup,
   },
-  mounted() {
+  created() {
     this.getServices();
   },
   methods: {
     getServices() {
       axios
-        .get("http://127.0.0.1:8000/api/services")
+        .get("/api/services")
         .then((response) => {
           this.services = response.data;
         })
-        .catch((error) => {
-          console.log(error);
+        .catch((err) => {
+          if (err.response.data.message == "Unauthenticated.") {
+            this.$router.push("/cms/login");
+          } else {
+            window.alert(
+              "Es ist ein Fehler aufgetreten",
+              err.response.data.message
+            );
+          }
         });
     },
 

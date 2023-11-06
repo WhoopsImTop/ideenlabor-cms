@@ -6,11 +6,16 @@
       <div class="grid grid-cols-2 gap-16 py-4">
         <div class="col-span-1">
           <div class="flex flex-col">
+            <customer-search-component
+              v-if="!invoice.customer_number"
+              ref="customerSelect"
+              @customerSelected="setCutomerData"
+            />
             <input
-              type="text"
-              v-model="customer.customer_name"
-              placeholder="Name des Kunden"
+              v-else
               class="border-2 rounded border-solid p-2"
+              type="search"
+              v-model="customer.customer_name"
             />
           </div>
           <div class="flex flex-col my-2">
@@ -160,7 +165,16 @@
             <div class="divTableCell" style="width: 50px">
               {{ index + 1 }}
             </div>
-            <div class="divTableCell" style="width: 35%"><serviceSearchComponent ref="service" :index="index" v-model="position.name" @selectedService="setPositionData"></serviceSearchComponent>
+            <div class="divTableCell" style="width: 35%">
+              <serviceSearchComponent
+                v-if="position.name == ''"
+                ref="service"
+                :index="index"
+                v-model="position.name"
+                @selectedService="setPositionData"
+                @setService="setService"
+              ></serviceSearchComponent>
+              <input v-else type="search" v-model="position.name" />
             </div>
             <div class="divTableCell" style="width: 10%">
               <input
@@ -282,7 +296,7 @@
       <h3>Fußbereich</h3>
       <div class="grid grid-cols-6 gap-4 my-2">
         <div class="flex flex-col col-span-4">
-          <label>Zahlungsbedingung</label>
+          <label>Angebotszeitraum</label>
           <input
             class="border-2 rounded border-solid p-2"
             v-model="invoice.invoice_payment_condition"
@@ -291,7 +305,7 @@
           />
         </div>
         <div class="flex flex-col col-span-2">
-          <label>Zahlungsziel</label>
+          <label>Angebotsgüligkeit</label>
           <select
             @change="updatePaymentConditions"
             class="border-2 rounded border-solid p-2"
@@ -306,12 +320,12 @@
       <div class="py-4">
         <div class="flex flex-col mt-4">
           <label>Nachbemerkung</label>
-          <input
+          <textarea
             class="border-2 rounded border-solid p-2 w-full"
             ref="afterword"
             v-model="invoice.invoice_afterword"
             placeholder="Nachbemerkung"
-          />
+          ></textarea>
         </div>
       </div>
     </div>
@@ -354,7 +368,7 @@ export default {
   name: "createInvoice",
   components: {
     CustomerSearchComponent,
-    serviceSearchComponent
+    serviceSearchComponent,
   },
   props: {},
   data() {
@@ -400,7 +414,7 @@ export default {
           },
         ],
         invoice_payment_condition: "",
-        invoice_afterword: "Vielen Dank für die gute Zusammenarbeit.",
+        invoice_afterword: "Wir würden uns über eine Auftragserteilung freuen.",
       },
       invoiceTableHeader: {
         drag: {
@@ -446,7 +460,7 @@ export default {
         },
       },
       unitOptions: [
-        { value: "Stunde", text: "Stunde" },
+        { value: "Stunden", text: "Stunden" },
         { value: "Stück", text: "Stück" },
         { value: "Tag", text: "Tag" },
         { value: "Monat", text: "Monat" },
@@ -491,9 +505,13 @@ export default {
     },
   },
   methods: {
+    setService(data, index) {
+      this.invoice.invoice_positions[index].name = data;
+    },
     setPositionData(data, index) {
       this.invoice.invoice_positions[index].name = data.service_name;
-      this.invoice.invoice_positions[index].description = data.service_description;
+      this.invoice.invoice_positions[index].description =
+        data.service_description;
       this.invoice.invoice_positions[index].price = data.service_price;
       this.invoice.invoice_positions[index].tax = data.service_tax;
       this.invoice.invoice_positions[index].unit = data.service_unit;
@@ -505,16 +523,14 @@ export default {
       // Calculate the due date based on the selected payment term
       dueDate.setDate(dueDate.getDate() + parseInt(this.zahlungsziel));
 
-      this.invoice.invoice_payment_condition = `Zahlbar innerhalb von ${
-        this.zahlungsziel
-      } Tagen nach Rechnungsdatum (Zahlungsziel: ${this.calculatePaymentDate()})`;
+      this.invoice.invoice_payment_condition = `Das Angebot ist gültig bis zum ${this.calculatePaymentDate()}`;
     },
     generateCustomer() {
       this.customer.customer_name = this.$refs.customerSelect.getData();
       let thus = this;
       return new Promise(function (resolve, reject) {
         axios
-          .post("http://127.0.0.1:8000/api/customers", thus.customer)
+          .post("/api/customers", thus.customer)
           .then((res) => {
             resolve(res.data.data);
           })
@@ -527,10 +543,16 @@ export default {
       this.createDraftInvoiceButtonText = "Speichern...";
       if (this.validateInvoice()) {
         if (!this.customer.customer_number) {
-          let customer = await this.generateCustomer().then((customer) => {
-            console.log(customer);
-            return customer;
-          });
+          let customer = await this.generateCustomer()
+            .then((customer) => {
+              console.log(customer);
+              return customer;
+            })
+            .catch((err) => {
+              window.alert(
+                `Fehler beim erstellen des Kunden. Bitte überprüfe deine Eingabe`
+              );
+            });
           this.customer = customer;
           this.invoice.customer_id = customer.id;
           this.invoice.customer_number = customer.customer_number;
@@ -551,11 +573,7 @@ export default {
           element.description.replace(/\r?\n/g, "<br />");
         });
         axios
-          .patch(
-            "http://127.0.0.1:8000/api/offers/" +
-              this.$route.params.offer_number,
-            this.invoice
-          )
+          .patch("/api/offers/" + this.$route.params.offer_number, this.invoice)
           .then((res) => {
             this.invoice.invoice_number = res.data.invoice_number;
           })
@@ -575,11 +593,9 @@ export default {
     },
     deleteOffer() {
       axios
-        .delete(
-          "http://127.0.0.1:8000/api/offers/" + this.$route.params.offer_number
-        )
+        .delete("/api/offers/" + this.$route.params.offer_number)
         .then(() => {
-          this.$router.push("/offers");
+          this.$router.push("/cms/offers");
         })
         .catch((err) => {
           console.log(err);
@@ -598,9 +614,11 @@ export default {
       this.invoice.invoice_sent = false;
       this.invoice.invoice_send_date = null;
       axios
-        .post("http://127.0.0.1:8000/api/invoices", this.invoice)
+        .post("/api/invoices", this.invoice)
         .then((response) => {
-          this.$router.push("/invoices/edit/" + response.data.data.invoice_number);
+          this.$router.push(
+            "/cms/invoices/edit/" + response.data.data.invoice_number
+          );
         })
         .catch((err) => {
           window.alert("Fehler beim Erstellen der Rechnung!");
@@ -610,10 +628,16 @@ export default {
       this.createInvoiceButtonText = "Angebot wird erstellt...";
       if (this.validateInvoice()) {
         if (!this.customer.customer_number) {
-          let customer = await this.generateCustomer().then((customer) => {
-            console.log(customer);
-            return customer;
-          });
+          let customer = await this.generateCustomer()
+            .then((customer) => {
+              console.log(customer);
+              return customer;
+            })
+            .catch((err) => {
+              window.alert(
+                `Fehler beim erstellen des Kunden. Bitte überprüfe deine Eingabe`
+              );
+            });
           this.customer = customer;
           this.invoice.customer_id = customer.id;
           this.invoice.customer_number = customer.customer_number;
@@ -628,6 +652,23 @@ export default {
           this.invoice.invoice_delivery_end_date = "";
         } else {
           this.invoice.invoice_delivery_date = "";
+        }
+
+        //replace all linebreaks with <br /> and wrap each line in <p> tags in invoice_afterword if there is a linebreak
+        if (this.invoice.invoice_afterword) {
+          this.invoice.invoice_afterword = this.invoice.invoice_afterword
+            .replace(/\r?\n/g, "<br />")
+            .split("<br />")
+            //if line is already wrapped in <p> tags, remove them
+            .map((line) => {
+              if (line.startsWith("<p>") && line.endsWith("</p>")) {
+                return line.substring(3, line.length - 4);
+              } else {
+                return line;
+              }
+            })
+            .map((line) => `<p>${line}</p>`)
+            .join("");
         }
 
         this.invoice.invoice_positions.forEach((element) => {
@@ -647,13 +688,11 @@ export default {
             .join("");
         });
         axios
-          .patch(
-            "http://127.0.0.1:8000/api/offers/" +
-              this.$route.params.offer_number,
-            this.invoice
-          )
+          .patch("/api/offers/" + this.$route.params.offer_number, this.invoice)
           .then((res) => {
-            this.$router.push("/send-offer/" + res.data.data.invoice_number);
+            this.$router.push(
+              "/cms/send-offer/" + res.data.data.invoice_number
+            );
           })
           .catch((err) => {
             this.createInvoiceButtonText = "Fehler beim Erstellen der Angebot!";
@@ -734,14 +773,15 @@ export default {
 
       // Calculate the due date based on the selected payment term
       dueDate.setDate(dueDate.getDate() + parseInt(this.zahlungsziel));
+      // Format the date to yyyy-mm-dd
+      let formattedDate = dueDate.toISOString().slice(0, 10);
+      this.invoice.invoice_due_date = formattedDate;
       return dueDate.toLocaleDateString("de-DE");
     },
   },
-  beforeMount() {
-    axios
-      .get(
-        "http://127.0.0.1:8000/api/offers/" + this.$route.params.offer_number
-      )
+  async created() {
+    await axios
+      .get("/api/offers/" + this.$route.params.offer_number)
       .then((res) => {
         this.invoice = res.data.data;
         this.invoice.invoice_positions = JSON.parse(
@@ -752,22 +792,26 @@ export default {
         const leistungszeitraum =
           this.invoice.invoice_delivery_date.split(" - ");
         //parse dates to iso string
-      })
-      .catch((err) => {
-        console.log(err);
       });
-  },
-  mounted() {
+
     this.invoice.invoice_date = new Date().toISOString().slice(0, 10);
     this.invoice.invoice_delivery_date = new Date().toISOString().slice(0, 10);
     this.leistungszeitraumStart = new Date().toISOString().slice(0, 10);
     this.leistungszeitraumEnde = new Date().toISOString().slice(0, 10);
 
-    this.invoice.invoice_payment_condition = `Zahlbar innerhalb von ${
-      this.zahlungsziel
-    } Tagen nach Rechnungsdatum (Zahlungsziel: ${this.calculatePaymentDate()})`;
+    this.invoice.invoice_payment_condition = `Das Angebot ist gültig bis zum ${this.calculatePaymentDate()}`;
 
     this.invoice.invoice_due_date = this.calculatePaymentDate();
+    //replace all <p> tags with linebreaks in invoice_positions.description
+    this.invoice.invoice_positions.forEach((element) => {
+      element.description = element.description
+        .replace(/<p>/g, "\n")
+        .replace(/<\/p>/g, "");
+      //first line break is not needed
+      if (element.description.startsWith("\n")) {
+        element.description = element.description.substring(1);
+      }
+    });
   },
 };
 </script>

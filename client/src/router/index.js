@@ -2,87 +2,118 @@ import { createRouter, createWebHistory } from "vue-router";
 import dashboardView from "../views/dashboard.vue";
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  root: "/cms/",
+  history: createWebHistory(),
   routes: [
     {
-      path: "/",
+      path: "/cms/",
       name: "dashboard",
       component: dashboardView,
     },
     {
-      path: "/invoices",
+      path: "/cms/login",
+      name: "login",
+      component: () => import("../views/login.vue"),
+    },
+    {
+      path: "/cms/invoices",
       name: "invoices",
       component: () => import("../views/invoices/invoices.vue"),
     },
     {
-      path: "/invoices/edit/:invoice_number",
+      path: "/cms/invoices/edit/:invoice_number",
       name: "editInvoice",
       component: () => import("../views/invoices/editInvoice.vue"),
     },
     {
-      path: "/create-invoice",
+      path: "/cms/create-invoice",
       name: "create-invoice",
       component: () => import("../views/invoices/createInvoice.vue"),
     },
     {
-      path: "/send-invoice/:invoice_number",
+      path: "/cms/create-recurring-invoice",
+      name: "create-recurring-invoice",
+      component: () => import("../views/recurringInvoices/createRecurringInvoice.vue"),
+    },
+    {
+      path: "/cms/recurring-invoices",
+      name: "recurring-invoices",
+      component: () => import("../views/recurringInvoices/recurringInvoices.vue"),
+    },
+    {
+      path: "/cms/edit-recurring-invoices/:id",
+      name: "edit-recurring-invoice",
+      component: () => import("../views/recurringInvoices/editRecurringInvoice.vue"),
+    },
+    {
+      path: "/cms/send-invoice/:invoice_number",
       name: "send-invoice",
       component: () => import("../views/invoices/sendInvoice.vue"),
     },
     {
-      path: "/offers",
+      path: "/cms/offers",
       name: "offers",
       component: () => import("../views/offers/offers.vue"),
     },
     {
-      path: "/offers/edit/:offer_number",
+      path: "/cms/offers/edit/:offer_number",
       name: "edit-offer",
       component: () => import("../views/offers/editOffer.vue"),
     },
     {
-      path: "/create-offers",
+      path: "/cms/create-offers",
       name: "create-offers",
       component: () => import("../views/offers/createOffer.vue"),
     },
     {
-      path: "/send-offer/:offer_number",
+      path: "/cms/send-offer/:offer_number",
       name: "send-offers",
       component: () => import("../views/offers/sendOffer.vue"),
     },
     {
-      path: "/pages",
+      path: "/cms/pages",
       name: "page-overview",
       component: () => import("../views/sites/overview.vue"),
     },
     {
-      path: "/pages/create",
+      path: "/cms/pages/create",
       name: "page-create",
       component: () => import("../views/sites/create.vue"),
     },
     {
-      path: "/pages/:id",
+      path: "/cms/pages/:id",
       name: "page",
       component: () => import("../views/sites/edit.vue"),
     },
     {
-      path: "/customers",
+      path: "/cms/customers",
       name: "customersOverview",
       component: () => import("../views/customers/overview.vue"),
     },
     {
-      path: "/services",
+      path: "/cms/services",
       name: "ServicesOverview",
       component: () => import("../views/services/overview.vue"),
     },
     {
-      path: "/company",
+      path: "/cms/company",
       name: "Company",
       component: () => import("../views/company/overview.vue"),
     },
     {
-      path: "/media",
+      path: "/cms/media",
       name: "ImageOverview",
       component: () => import("../views/images/overview.vue"),
+    },
+    {
+      path: "/cms/customer-center",
+      name: "customerCenter",
+      component: () => import("../views/customerCenter/overview.vue"),
+    },
+    {
+      path: "/cms/customer-center/:id",
+      name: "editCustomerCenter",
+      component: () => import("../views/customerCenter/edit.vue"),
     }
   ],
 });

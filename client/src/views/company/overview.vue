@@ -164,49 +164,58 @@ export default {
       let formData = new FormData();
       formData.append("image", document.getElementById("image").files[0]);
       axios
-        .post("http://127.0.0.1:8000/api/images", formData)
+        .post("/api/images", formData)
         .then((response) => {
           this.company.company_image = response.data.data.src;
         })
         .catch((error) => {
-          console.log(error);
+          window.alert("Es ist ein Fehler aufgetreten");
         });
     },
     getCompanyData() {
       axios
-        .get("http://127.0.0.1:8000/api/company")
+        .get("/api/company")
         .then((response) => {
-          this.company = response.data[0];
+          if (response.data.length > 0) {
+            this.company = response.data[0];
+          }
         })
-        .catch((error) => {
-          console.log(error);
+        .catch((err) => {
+          if (err.response.data.message == "Unauthenticated.") {
+            this.$router.push("/cms/login");
+          } else {
+            window.alert(
+              "Es ist ein Fehler aufgetreten",
+              err.response.data.message
+            );
+          }
         });
     },
     createCompany() {
       if (this.company.id) {
         axios
-          .patch("http://127.0.0.1:8000/api/company/" + this.company.id, this.company)
+          .patch("/api/company/" + this.company.id, this.company)
           .then((response) => {
             console.log(response);
             this.company = response.data;
           })
           .catch((error) => {
-            console.log(error);
+            window.alert("Es ist ein Fehler aufgetreten");
           });
       } else {
         axios
-          .post("http://127.0.0.1:8000/api/company/", this.company)
+          .post("/api/company/", this.company)
           .then((response) => {
             console.log(response);
             this.company = response.data;
           })
           .catch((error) => {
-            console.log(error);
+            window.alert("Es ist ein Fehler aufgetreten");
           });
       }
     },
   },
-  beforeMount() {
+  created() {
     this.getCompanyData();
   },
 };

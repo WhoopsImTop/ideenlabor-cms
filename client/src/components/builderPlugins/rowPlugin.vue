@@ -10,6 +10,12 @@
         <button @click="removeRow()">
           <img width="20" src="../../assets/delete.svg" alt="Preview" />
         </button>
+        <button @click="moveRowUp()">
+          <img width="25" src="../../assets/up.svg" alt="Preview" />
+        </button>
+        <button @click="moveRowDown()">
+          <img width="25" src="../../assets/down.svg" alt="Preview" />
+        </button>
       </div>
     </div>
     <div class="builder-element-drapable-zone" :style="generatedLayout">
@@ -25,8 +31,13 @@
           :key="index"
         >
           {{ component.label }}
-          <div class="editBtn" @click="triggerComponentEdit(component)">
-            <img src="../../assets/edit.svg" width="20" alt="edit" />
+          <div class="flex align-center">
+            <div class="editBtn mr-3" @click="triggerComponentEdit(component)">
+              <img src="../../assets/edit.svg" width="20" alt="edit" />
+            </div>
+            <div class="deleteBtn" @click="triggerComponentDelete(component)">
+              <img src="../../assets/delete.svg" width="20" alt="delete" />
+            </div>
           </div>
         </div>
         <div class="addBtn" @click="triggerComponentsDrawer(i, index)">
@@ -93,13 +104,22 @@ export default {
       return this.component;
     },
     removeRow() {
-      this.$emit("removeRow", this.index);
+      this.$emit("removeRow", this.component);
+    },
+    moveRowUp() {
+      this.$emit("moveRowUp", this.component);
+    },
+    moveRowDown() {
+      this.$emit("moveRowDown", this.component);
     },
     triggerComponentsDrawer(componentIndex, index) {
       this.$emit("triggerComponentsDrawer", componentIndex, index);
     },
     triggerComponentEdit(component) {
       this.$emit("triggerComponentEdit", component);
+    },
+    triggerComponentDelete(component) {
+      this.$emit("triggerComponentDelete", component);
     },
   },
 };

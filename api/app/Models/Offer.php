@@ -36,6 +36,37 @@ class Offer extends Model
         "invoice_status"
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Generate invoice number before saving the model
+        static::creating(function ($invoice) {
+            $invoice->invoice_number = static::generateInvoiceNumber();
+        });
+    }
+
+    /**
+     * Generate a unique invoice number.
+     *
+     * @return string
+     */
+    protected static function generateInvoiceNumber()
+    {
+        // Generate a Invoice Number in Format RE-YY-0000
+        $invoiceNumber = 'AG-' . date('y') . '-';
+        $latestInvoice = static::whereRaw("invoice_number = (select max(`invoice_number`) from offers)")->first();
+
+        if ($latestInvoice) {
+            $latestInvoiceNumber = substr($latestInvoice->invoice_number, 6);
+            $invoiceNumber .= str_pad($latestInvoiceNumber + 1, 3, 0, STR_PAD_LEFT);
+        } else {
+            $invoiceNumber .= '001';
+        }
+
+        return $invoiceNumber;
+    }
+
     public function customer()
     {
         return $this->belongsTo(Customer::class, 'customer_number', 'customer_number');
