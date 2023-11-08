@@ -12,7 +12,7 @@
       </div>
     </div>
     <!-- draw a graph with the income by month -->
-    <div class="col p-5">
+    <div class="col p-5" v-if="invoices.length > 0">
       <h3>Umsatz nach Monat</h3>
       <Line :data="chartData" :options="chartOptions"></Line>
     </div>
@@ -28,7 +28,8 @@ import {
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  Filler
 } from 'chart.js'
 import { Line } from "vue-chartjs";
 import axios from "axios";
@@ -40,7 +41,8 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  Filler
 )
 
 export default {
@@ -105,7 +107,7 @@ export default {
             },
             {
               label: "Netto",
-              backgroundColor: "#82ba26",
+              backgroundColor: "#82ba2620",
               borderColor: "#82ba26",
               fill: true,
               data: income.map((value) => {

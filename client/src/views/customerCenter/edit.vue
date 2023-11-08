@@ -1,13 +1,67 @@
 <template>
   <div v-if="currentCustomerCenter !== null">
     <div
+      v-if="moveEntry"
+      class="absolute z-10 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 shadow-sm bg-white flex flex-col p-4 rounded-lg"
+    >
+      <div class="flex items-center justify-between">
+        <h2 class="font-bold text-lg">Verschieben</h2>
+        <div>
+          <img
+            src="../../assets/close.svg"
+            width="20"
+            alt="schließen"
+            @click="moveEntry = false"
+          />
+        </div>
+      </div>
+      <!-- list all folders to move in -->
+      <div class="mt-4">
+        <label class="block">
+          <span class="text-gray-700">Ordner</span>
+          <select
+            class="mt-1 block w-full rounded-md border-gray-300 border border-gray-500 outline-none focus:border-pink-600 focus:ring focus:ring-pink-200 focus:ring-opacity-50 py-2 px-3"
+            v-model="folderToMoveIn"
+          >
+            <option
+              v-for="folder in currentCustomerCenter.folders[0].folder_children"
+              :key="folder.id"
+              :value="folder.id"
+            >
+              {{ folder.folder_name }}
+            </option>
+          </select>
+        </label>
+      </div>
+      <div class="flex items-center justify-end">
+        <button
+          class="bg-pink-600 text-white rounded-full py-2 px-4 mt-4 mr-2"
+          @click="moveEntryToFolder()"
+        >
+          Verschieben
+        </button>
+        <button
+          class="bg-gray-100 text-gray-900 rounded-full py-2 px-4 mt-4"
+          @click="moveEntry = false"
+        >
+          Schließen
+        </button>
+      </div>
+    </div>
+
+    <div
       v-if="createFolderModal"
       class="absolute z-10 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 rounded shadow-sm bg-white flex flex-col p-4 rounded-lg"
     >
       <div class="flex items-center justify-between">
         <h2 class="font-bold text-lg">Ordner Erstellen</h2>
         <div>
-          <img src="../../assets/close.svg" width="20" alt="schließen" />
+          <img
+            src="../../assets/close.svg"
+            width="20"
+            alt="schließen"
+            @click="closeFolderModal()"
+          />
         </div>
       </div>
       <div class="mt-4">
@@ -22,24 +76,23 @@
         </label>
         <label class="block mt-4">
           <span class="text-gray-700">Ordner Beschreibung</span>
-          <textarea
-            type="text"
-            class="mt-1 block w-full rounded-md border-gray-300 border border-gray-500 outline-none focus:border-pink-600 focus:ring focus:ring-pink-200 focus:ring-opacity-50 py-2 px-3"
-            placeholder="Ordner Beschreibung"
-            v-model="newFolderDescription"
-          ></textarea>
         </label>
+        <ckeditor
+          :editor="editor"
+          v-model="newFolderDescription"
+          :config="editorConfig"
+        ></ckeditor>
       </div>
       <div class="flex items-center justify-end">
         <button
           class="bg-pink-600 text-white rounded-full py-2 px-4 mt-4 mr-2"
           @click="CreateFolder()"
         >
-          Erstellen
+          {{ editingFolder === null ? "Erstellen" : "Aktualisieren" }}
         </button>
         <button
           class="bg-gray-100 text-gray-900 rounded-full py-2 px-4 mt-4"
-          @click="createFolderModal = false"
+          @click="closeFolderModal()"
         >
           Schließen
         </button>
@@ -49,9 +102,11 @@
       <div class="rounded bg-white p-2 shadow-sm mb-4">
         <p>
           <strong>Name:</strong>
-          {{ currentCustomerCenter.customer.customer_name != ''
-            ? currentCustomerCenter.customer.customer_name
-            : currentCustomerCenter.customer.customer_company_name }}
+          {{
+            currentCustomerCenter.customer.customer_name != ""
+              ? currentCustomerCenter.customer.customer_name
+              : currentCustomerCenter.customer.customer_company_name
+          }}
         </p>
         <p>
           <strong>Email:</strong>
@@ -120,9 +175,11 @@
             v-for="folder in currentFolder.folder_children"
             :key="folder.id"
             class="hover:bg-gray-100 hover:cursor-pointer"
-            @click="fetchFolder(folder.folder_hash)"
           >
-            <td class="text-sm font-normal py-2 px-2">
+            <td
+              class="text-sm font-normal py-2 px-2"
+              @click="fetchFolder(folder.folder_hash)"
+            >
               <p class="flex items-center">
                 <img
                   src="./../../assets/folder.svg"
@@ -139,10 +196,17 @@
             </td>
             <td>
               <div class="flex items-center justify-end py-2 px-2">
-                <a @click="editFolder(folder.id)">
+                <a @click="editFolder(folder.id)" class="mx-1">
                   <img src="./../../assets/edit.svg" width="18" alt="folder" />
                 </a>
-                <a @click="deleteFolder(folder.folder_hash)"
+                <a @click="moveFolder(folder.id)" class="mx-1">
+                  <img
+                    src="./../../assets/move_folder.svg"
+                    width="20"
+                    alt="folder"
+                  />
+                </a>
+                <a @click="deleteFolder(folder.folder_hash)" class="mx-1"
                   ><img src="./../../assets/delete.svg" width="20"
                 /></a>
               </div>
@@ -172,7 +236,14 @@
             </td>
             <td>
               <div class="flex items-center justify-end py-2 px-2">
-                <a @click="deleteFile(file.id)"
+                <a @click="moveFile(file.id)" class="mx-1">
+                  <img
+                    src="./../../assets/move_folder.svg"
+                    width="20"
+                    alt="file"
+                  />
+                </a>
+                <a @click="deleteFile(file.id)" class="mx-1"
                   ><img src="./../../assets/delete.svg" width="20"
                 /></a>
               </div>
@@ -187,6 +258,9 @@
 <script>
 import axios from "axios";
 import dragAndDropUploaderVue from "../../components/dragAndDropUploader.vue";
+
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+
 export default {
   components: {
     dragAndDropUploaderVue,
@@ -199,27 +273,151 @@ export default {
       createFolderModal: false,
       newFolderName: "",
       newFolderDescription: "",
+      editingFolder: null,
+      moveEntry: false,
+      folderToMoveIn: null,
+      folderToMove: null,
+      folderToMoveInName: null,
+      folderToMoveId: null,
+      fileToMove: null,
+      editor: ClassicEditor,
+      editorData: "<p>Content of the editor.</p>",
+      editorConfig: {
+        toolbar: [
+          "heading",
+          "|",
+          "bold",
+          "italic",
+          "link",
+          "bulletedList",
+          "numberedList",
+          "blockQuote",
+          "undo",
+          "redo",
+        ],
+      },
     };
   },
   methods: {
+    moveEntryToFolder() {
+      //find folder_name of folderToMoveIn
+      this.folderToMoveInName =
+        this.currentCustomerCenter.folders[0].folder_children.find(
+          (folder) => folder.id === this.folderToMoveIn
+        ).folder_name;
+
+      this.folderToMoveId =
+        this.currentCustomerCenter.folders[0].folder_children.find(
+          (folder) => folder.id === this.folderToMoveIn
+        ).id;
+      if (this.folderToMove !== null) {
+        axios
+          .patch("/api/folders/" + this.folderToMove, {
+            folder_parent_id: this.folderToMoveId,
+            folder_name: this.folderToMoveInName,
+          })
+          .then((response) => {
+            this.currentFolder.folder_children =
+              this.currentFolder.folder_children.filter(
+                (folder) => folder.id !== this.folderToMove
+              );
+            this.currentCustomerCenter.folders[0].folder_children.push(
+              response.data.data
+            );
+            this.moveEntry = false;
+            this.folderToMoveId = null;
+            this.folderToMoveInName = null;
+            this.folderToMove = null;
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else if (this.fileToMove !== null) {
+        axios
+          .patch("/api/uploads/" + this.fileToMove, {
+            folder_id: this.folderToMoveId,
+          })
+          .then((response) => {
+            this.currentFolder.uploads = this.currentFolder.uploads.filter(
+              (file) => file.id !== this.fileToMove
+            );
+            this.currentFolder.uploads.push(response.data.data);
+            this.moveEntry = false;
+            this.folderToMoveId = null;
+            this.folderToMoveInName = null;
+            this.fileToMove = null;
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    },
+
+    moveFolder(folderId) {
+      this.moveEntry = true;
+      this.folderToMove = folderId;
+    },
+
+    moveFile(fileId) {
+      this.moveEntry = true;
+      this.fileToMove = fileId;
+    },
+
     addFolder() {
       this.createFolderModal = true;
     },
     CreateFolder() {
-      axios
-        .post("/api/folders", {
-          folder_name: this.newFolderName,
-          description: this.newFolderDescription,
-          folder_parent_id: this.currentFolder.id,
-          customer_id: this.currentCustomerCenter.customer.id,
-        })
-        .then((response) => {
-          this.currentFolder.folder_children.push(response.data.data);
-          this.createFolderModal = false;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      if (this.editingFolder) {
+        axios
+          .put("/api/folders/" + this.editingFolder.id, {
+            folder_hash: this.editingFolder.folder_hash,
+            customer_id: this.currentCustomerCenter.customer.id,
+            folder_name: this.newFolderName,
+            description: this.newFolderDescription,
+          })
+          .then((response) => {
+            this.editingFolder.folder_name = this.newFolderName;
+            this.editingFolder.description = this.newFolderDescription;
+            this.createFolderModal = false;
+            this.newFolderDescription = "";
+            this.newFolderName = "";
+            this.editingFolder = null;
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        axios
+          .post("/api/folders", {
+            folder_name: this.newFolderName,
+            description: this.newFolderDescription,
+            folder_parent_id: this.currentFolder.id,
+            customer_id: this.currentCustomerCenter.customer.id,
+          })
+          .then((response) => {
+            this.currentFolder.folder_children.push(response.data.data);
+            this.createFolderModal = false;
+            this.newFolderDescription = "";
+            this.newFolderName = "";
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    },
+    editFolder(folderId) {
+      this.editingFolder = this.currentFolder.folder_children.find(
+        (folder) => folder.id === folderId
+      );
+      this.newFolderName = this.editingFolder.folder_name;
+      this.newFolderDescription = this.editingFolder.description;
+      this.createFolderModal = true;
+    },
+    closeFolderModal() {
+      this.createFolderModal = false;
+      this.newFolderDescription = "";
+      this.newFolderName = "";
+      this.editingFolder = null;
     },
     PushFilesToCurrentFolder(file) {
       this.currentFolder.uploads.push(file);
@@ -271,9 +469,10 @@ export default {
       axios
         .delete("/api/folders/" + folderId)
         .then((response) => {
-          this.currentFolder.folder_children = this.currentFolder.folder_children.filter(
-            (folder) => folder.id !== folderId
-          );
+          this.currentFolder.folder_children =
+            this.currentFolder.folder_children.filter(
+              (folder) => folder.id !== folderId
+            );
         })
         .catch((error) => {
           console.log(error);
@@ -291,4 +490,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.ck-editor__editable {
+  min-height: 150px !important;
+}
+</style>

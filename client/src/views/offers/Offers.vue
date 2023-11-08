@@ -108,10 +108,22 @@
           </div>
         </div>
         <div class="flex flex-row align-center justify-between p-4 border-b-2">
-          <div class="edit" @click="editOffer(activeInvoice)">
+          <div
+            class="edit hover:cursor-pointer"
+            @click="editOffer(activeInvoice)"
+          >
             <img width="20" src="../../assets/edit.svg" alt="edit" />
           </div>
-          <div class="delete" @click="deleteOffer(activeInvoice)">
+          <div
+            class="duplicate hover:cursor-pointer"
+            @click="duplicateInvoice(activeInvoice)"
+          >
+            <img width="20" src="../../assets/duplicate.svg" alt="edit" />
+          </div>
+          <div
+            class="delete hover:cursor-pointer"
+            @click="deleteOffer(activeInvoice)"
+          >
             <img width="20" src="../../assets/delete.svg" alt="delete" />
           </div>
         </div>
@@ -165,7 +177,12 @@
           />
           <span class="text-right"
             >zu erhalten
-            {{ parseFloat(activeInvoice.invoice_total).toFixed(2) }} €</span
+            {{
+              new Intl.NumberFormat("de-DE", {
+                style: "currency",
+                currency: "EUR",
+              }).format(activeInvoice.invoice_total)
+            }}</span
           >
         </div>
       </div>
@@ -219,6 +236,41 @@ export default {
     };
   },
   methods: {
+    duplicateInvoice(invoice) {
+      if (
+        confirm(
+          `Sind Sie sicher, dass Sie dieses Angebot ${invoice.invoice_number} duplizieren möchten?`
+        )
+      ) {
+        //duplicate activeInvoice
+        let newInvoice = { ...invoice };
+        newInvoice.invoice_number = null;
+        newInvoice.invoice_date = new Date().toISOString().slice(0, 10);
+        newInvoice.invoice_due_date = new Date().toISOString().slice(0, 10);
+        newInvoice.invoice_status = "entwurf";
+        newInvoice.invoice_sent = "0";
+        newInvoice.invoice_send_date = null;
+        newInvoice.invoice_path = null;
+        newInvoice.invoice_subtotal = 0.0;
+        newInvoice.invoice_total = 0.0;
+        newInvoice.invoice_tax = 0.0;
+        newInvoice.invoice_positions = JSON.parse(
+          this.activeInvoice.invoice_positions
+        );
+
+        axios
+          .post("/api/offers", newInvoice)
+          .then((response) => {
+            console.log(this.tableInvoiceData);
+            this.tableInvoiceData.unshift(response.data.data);
+            console.log(this.tableInvoiceData);
+            this.tableActions = false;
+          })
+          .catch((error) => {
+            window.alert("Es ist ein Fehler aufgetreten");
+          });
+      }
+    },
     setInvoiceActive(invoice) {
       this.tableActions = true;
       this.activeInvoice = invoice;
@@ -259,19 +311,34 @@ export default {
     filteredInvoices() {
       return this.tableInvoiceData
         .filter((invoice) => {
+          // Filter by invoice_number and if customer is defined, check customer_name or customer_company_name
+          const invoiceNumberMatch = invoice.invoice_number
+            ? invoice.invoice_number
+                .toLowerCase()
+                .includes(this.searchInvoice.toLowerCase())
+            : false;
+
+          const customerNameMatch =
+            invoice.customer && invoice.customer.customer_name
+              ? invoice.customer.customer_name
+                  .toLowerCase()
+                  .includes(this.searchInvoice.toLowerCase())
+              : false;
+
+          const customerCompanyNameMatch =
+            invoice.customer && invoice.customer.customer_company_name
+              ? invoice.customer.customer_company_name
+                  .toLowerCase()
+                  .includes(this.searchInvoice.toLowerCase())
+              : false;
+
           return (
-            invoice.invoice_number
-              .toLowerCase()
-              .includes(this.searchInvoice.toLowerCase()) ||
-            invoice.customer.customer_name
-              .toLowerCase()
-              .includes(this.searchInvoice.toLowerCase()) ||
-            invoice.invoice_status
-              .toLowerCase()
-              .includes(this.searchInvoice.toLowerCase())
+            invoiceNumberMatch || customerNameMatch || customerCompanyNameMatch
           );
         })
-        .reverse();
+        .sort((a, b) => {
+          return new Date(b.created_at) - new Date(a.created_at);
+        });
     },
   },
   created() {

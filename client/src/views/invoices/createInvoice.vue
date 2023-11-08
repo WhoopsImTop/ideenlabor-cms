@@ -225,7 +225,11 @@
 
           <div class="divTableRow">
             <div class="divTableCell" style="width: 100%">
-              <textarea v-model="position.description"></textarea>
+              <ckeditor
+                :editor="editor"
+                v-model="position.description"
+                :config="editorConfig"
+              ></ckeditor>
             </div>
           </div>
         </div>
@@ -311,12 +315,11 @@
       <div class="py-4">
         <div class="flex flex-col mt-4">
           <label>Nachbemerkung</label>
-          <textarea
-            class="border-2 rounded border-solid p-2 w-full"
-            ref="afterword"
+          <ckeditor
+            :editor="editor"
             v-model="invoice.invoice_afterword"
-            placeholder="Nachbemerkung"
-          ></textarea>
+            :config="editorConfig"
+          ></ckeditor>
         </div>
       </div>
     </div>
@@ -344,6 +347,8 @@
 import axios from "axios";
 import CustomerSearchComponent from "../../components/customerSearchComponent.vue";
 import serviceSearchComponent from "../../components/serviceSearchComponent.vue";
+
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 export default {
   name: "createInvoice",
@@ -447,6 +452,22 @@ export default {
         { value: "Monat", text: "Monat" },
         { value: "Produkt", text: "Produkt" },
       ],
+      editor: ClassicEditor,
+      editorData: "<p>Content of the editor.</p>",
+      editorConfig: {
+        toolbar: [
+          "heading",
+          "|",
+          "bold",
+          "italic",
+          "link",
+          "bulletedList",
+          "numberedList",
+          "blockQuote",
+          "undo",
+          "redo",
+        ],
+      },
     };
   },
   computed: {
@@ -532,7 +553,9 @@ export default {
               return customer;
             })
             .catch((err) => {
-              window.alert(`Fehler beim erstellen des Kunden. Bitte überprüfe deine Eingabe`);
+              window.alert(
+                `Fehler beim erstellen des Kunden. Bitte überprüfe deine Eingabe`
+              );
             });
           this.customer = customer;
           this.invoice.customer_id = customer.id;
@@ -550,9 +573,6 @@ export default {
           this.invoice.invoice_delivery_date = "";
         }
 
-        this.invoice.invoice_positions.forEach((element) => {
-          element.description.replace(/\r?\n/g, "<br />");
-        });
         await axios
           .post("/api/invoices", this.invoice)
           .then((res) => {
@@ -582,7 +602,9 @@ export default {
               return customer;
             })
             .catch((err) => {
-              window.alert(`Fehler beim erstellen des Kunden. Bitte überprüfe deine Eingabe`);
+              window.alert(
+                `Fehler beim erstellen des Kunden. Bitte überprüfe deine Eingabe`
+              );
             });
           this.customer = customer;
           this.invoice.customer_id = customer.id;
@@ -600,24 +622,6 @@ export default {
           this.invoice.invoice_delivery_date = "";
         }
 
-        //replace all linebreaks with <br /> and wrap each line in <p> tags in invoice_afterword if there is a linebreak
-        if (this.invoice.invoice_afterword) {
-          this.invoice.invoice_afterword = this.invoice.invoice_afterword
-            .replace(/\r?\n/g, "<br />")
-            .split("<br />")
-
-            .map((line) => `<p>${line}</p>`)
-            .join("");
-        }
-
-        this.invoice.invoice_positions.forEach((element) => {
-          //replace linebreaks and wrap in <p> tags around each line
-          element.description = element.description
-            .replace(/\r?\n/g, "<br />")
-            .split("<br />")
-            .map((line) => `<p>${line}</p>`)
-            .join("");
-        });
         await axios
           .post("/api/invoices", this.invoice)
           .then((res) => {

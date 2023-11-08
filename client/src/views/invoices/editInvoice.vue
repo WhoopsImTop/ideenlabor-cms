@@ -234,7 +234,11 @@
 
           <div class="divTableRow">
             <div class="divTableCell" style="width: 100%">
-              <textarea v-model="position.description"></textarea>
+              <ckeditor
+                :editor="editor"
+                v-model="position.description"
+                :config="editorConfig"
+              ></ckeditor>
             </div>
           </div>
         </div>
@@ -320,12 +324,11 @@
       <div class="py-4">
         <div class="flex flex-col mt-4">
           <label>Nachbemerkung</label>
-          <textarea
-            class="border-2 rounded border-solid p-2 w-full"
-            ref="afterword"
+          <ckeditor
+            :editor="editor"
             v-model="invoice.invoice_afterword"
-            placeholder="Nachbemerkung"
-          ></textarea>
+            :config="editorConfig"
+          ></ckeditor>
         </div>
       </div>
     </div>
@@ -353,6 +356,9 @@
 import axios from "axios";
 import CustomerSearchComponent from "../../components/customerSearchComponent.vue";
 import serviceSearchComponent from "../../components/serviceSearchComponent.vue";
+
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+
 export default {
   name: "editInvoice",
   components: {
@@ -455,6 +461,22 @@ export default {
         { value: "Monat", text: "Monat" },
         { value: "Produkt", text: "Produkt" },
       ],
+      editor: ClassicEditor,
+      editorData: "<p>Content of the editor.</p>",
+      editorConfig: {
+        toolbar: [
+          "heading",
+          "|",
+          "bold",
+          "italic",
+          "link",
+          "bulletedList",
+          "numberedList",
+          "blockQuote",
+          "undo",
+          "redo",
+        ],
+      },
     };
   },
   computed: {
@@ -560,9 +582,6 @@ export default {
           this.invoice.invoice_delivery_date = "";
         }
 
-        this.invoice.invoice_positions.forEach((element) => {
-          element.description.replace(/\r?\n/g, "<br />");
-        });
         axios
           .patch(
             "/api/invoices/" + this.$route.params.invoice_number,
@@ -614,24 +633,6 @@ export default {
         } else {
           this.invoice.invoice_delivery_date = "";
         }
-        //replace all linebreaks with <br /> and wrap each line in <p> tags in invoice_afterword if there is a linebreak
-        if (this.invoice.invoice_afterword) {
-          this.invoice.invoice_afterword = this.invoice.invoice_afterword
-            .replace(/\r?\n/g, "<br />")
-            .split("<br />")
-
-            .map((line) => `<p>${line}</p>`)
-            .join("");
-        }
-
-        this.invoice.invoice_positions.forEach((element) => {
-          //replace linebreaks and wrap in <p> tags around each line
-          element.description = element.description
-            .replace(/\r?\n/g, "<br />")
-            .split("<br />")
-            .map((line) => `<p>${line}</p>`)
-            .join("");
-        });
         axios
           .patch(
             "/api/invoices/" + this.$route.params.invoice_number,
@@ -733,9 +734,8 @@ export default {
       .get("/api/invoices/" + this.$route.params.invoice_number)
       .then((res) => {
         this.invoice = res.data.data;
-        this.invoice.invoice_positions = JSON.parse(
-          this.invoice.invoice_positions
-        ) || [];
+        this.invoice.invoice_positions =
+          JSON.parse(this.invoice.invoice_positions) || [];
         this.customer = res.data.data.customer;
         //get leistungszeitraum and parse dates from date - date
 
@@ -745,15 +745,6 @@ export default {
 
         this.invoice.invoice_due_date = this.calculatePaymentDate();
         //parse dates to iso string
-        this.invoice.invoice_positions.forEach((element) => {
-          element.description = element.description
-            .replace(/<p>/g, "\n")
-            .replace(/<\/p>/g, "");
-          //first line break is not needed
-          if (element.description.startsWith("\n")) {
-            element.description = element.description.substring(1);
-          }
-        });
       });
   },
   mounted() {

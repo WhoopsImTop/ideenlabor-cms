@@ -184,7 +184,12 @@
           />
           <span class="text-right"
             >zu erhalten
-            {{ parseFloat(activeInvoice.invoice_total).toFixed(2) }} €</span
+            {{
+              new Intl.NumberFormat("de-DE", {
+                style: "currency",
+                currency: "EUR",
+              }).format(activeInvoice.invoice_total)
+            }}</span
           >
         </div>
       </div>
@@ -256,9 +261,12 @@ export default {
     setAsPayed(invoice) {
       if (confirm("Wurde diese Rechnung bezahlt?")) {
         axios
-          .patch("/api/invoices/" + invoice.invoice_number + '?update_status=1', {
-            invoice_status: "bezahlt",
-          })
+          .patch(
+            "/api/invoices/" + invoice.invoice_number + "?update_status=1",
+            {
+              invoice_status: "bezahlt",
+            }
+          )
           .then((response) => {
             this.tableInvoiceData = this.tableInvoiceData.map((item) => {
               if (item.invoice_number === invoice.invoice_number) {
@@ -293,19 +301,34 @@ export default {
     filteredInvoices() {
       return this.tableInvoiceData
         .filter((invoice) => {
+          // Filter by invoice_number and if customer is defined, check customer_name or customer_company_name
+          const invoiceNumberMatch = invoice.invoice_number
+            ? invoice.invoice_number
+                .toLowerCase()
+                .includes(this.searchInvoice.toLowerCase())
+            : false;
+
+          const customerNameMatch =
+            invoice.customer && invoice.customer.customer_name
+              ? invoice.customer.customer_name
+                  .toLowerCase()
+                  .includes(this.searchInvoice.toLowerCase())
+              : false;
+
+          const customerCompanyNameMatch =
+            invoice.customer && invoice.customer.customer_company_name
+              ? invoice.customer.customer_company_name
+                  .toLowerCase()
+                  .includes(this.searchInvoice.toLowerCase())
+              : false;
+
           return (
-            invoice.invoice_number
-              .toLowerCase()
-              .includes(this.searchInvoice.toLowerCase()) ||
-            invoice.customer.customer_name
-              .toLowerCase()
-              .includes(this.searchInvoice.toLowerCase()) ||
-            invoice.invoice_status
-              .toLowerCase()
-              .includes(this.searchInvoice.toLowerCase())
+            invoiceNumberMatch || customerNameMatch || customerCompanyNameMatch
           );
         })
-        .reverse();
+        .sort((a, b) => {
+          return new Date(b.created_at) - new Date(a.created_at);
+        });
     },
   },
   created() {
