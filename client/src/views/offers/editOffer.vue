@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <defaultLayout>
     <h1>Angebot bearbeiten</h1>
     <div class="bg-white p-4 rounded shadow my-2">
       <h3>Kundenangaben</h3>
@@ -50,7 +50,7 @@
           </div>
           <span
             class="text-blue-400 font-bold cursor-pointer"
-            @click="customer = {}, invoice.customer_number = ''"
+            @click="(customer = {}), (invoice.customer_number = '')"
             >Kunde neu setzen</span
           >
         </div>
@@ -365,10 +365,11 @@
         </button>
       </div>
     </div>
-  </div>
+  </defaultLayout>
 </template>
 
 <script>
+import defaultLayout from "../../layouts/defaultLayout.vue";
 import axios from "axios";
 import CustomerSearchComponent from "../../components/customerSearchComponent.vue";
 import serviceSearchComponent from "../../components/serviceSearchComponent.vue";
@@ -380,6 +381,7 @@ export default {
   components: {
     CustomerSearchComponent,
     serviceSearchComponent,
+    defaultLayout,
   },
   props: {},
   data() {

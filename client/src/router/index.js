@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import dashboardView from "../views/dashboard.vue";
 
 const router = createRouter({
-  root: "/cms/",
+  base: "/cms",
   history: createWebHistory(),
   routes: [
     {
@@ -33,17 +33,20 @@ const router = createRouter({
     {
       path: "/cms/create-recurring-invoice",
       name: "create-recurring-invoice",
-      component: () => import("../views/recurringInvoices/createRecurringInvoice.vue"),
+      component: () =>
+        import("../views/recurringInvoices/createRecurringInvoice.vue"),
     },
     {
       path: "/cms/recurring-invoices",
       name: "recurring-invoices",
-      component: () => import("../views/recurringInvoices/recurringInvoices.vue"),
+      component: () =>
+        import("../views/recurringInvoices/recurringInvoices.vue"),
     },
     {
       path: "/cms/edit-recurring-invoices/:id",
       name: "edit-recurring-invoice",
-      component: () => import("../views/recurringInvoices/editRecurringInvoice.vue"),
+      component: () =>
+        import("../views/recurringInvoices/editRecurringInvoice.vue"),
     },
     {
       path: "/cms/send-invoice/:invoice_number",
@@ -106,7 +109,7 @@ const router = createRouter({
       component: () => import("../views/images/overview.vue"),
     },
     {
-      path: "/cms/customer-center",
+      path: "/cms/customer-center/overview",
       name: "customerCenter",
       component: () => import("../views/customerCenter/overview.vue"),
     },
@@ -119,6 +122,26 @@ const router = createRouter({
       path: "/cms/customer-center/:id",
       name: "editCustomerCenter",
       component: () => import("../views/customerCenter/edit.vue"),
+    },
+    {
+      path: "/cms/customer-center",
+      name: "customerCenterView",
+      component: () => import("../views/kundencenter/overview.vue"),
+    },
+    {
+      path: "/cms/customer-center/drive",
+      name: "customerCenterDrive",
+      component: () => import("../views/kundencenter/drive.vue"),
+    },
+    {
+      path: "/cms/customer-center/invoices",
+      name: "customerCenterInvoice",
+      component: () => import("../views/kundencenter/invoices.vue"),
+    },
+    {
+      path: "/cms/customer-center/login",
+      name: "customerCenterLogin",
+      component: () => import("../views/kundencenter/login.vue"),
     }
   ],
 });

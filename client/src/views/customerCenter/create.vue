@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <defaultLayout>
     <h1>Kundencenter erstellen</h1>
     <div class="bg-white p-4 rounded shadow my-2">
       <h3>Kunde Auswählen</h3>
@@ -25,10 +25,11 @@
         </button>
       </div>
     </div>
-  </div>
+  </defaultLayout>
 </template>
 
 <script>
+import defaultLayout from "../../layouts/defaultLayout.vue";
 import axios from "axios";
 import CustomerSearchComponent from "../../components/customerSearchComponent.vue";
 export default {
@@ -40,6 +41,7 @@ export default {
   },
   components: {
     CustomerSearchComponent,
+    defaultLayout,
   },
   methods: {
     generateCustomerCenter() {
@@ -50,10 +52,7 @@ export default {
         })
         .then((res) => {
           this.createCustomerCenterButtonText = "Erstellen";
-          this.$router.push({
-            name: "customerCenterEdit",
-            params: { id: res.data.id },
-          });
+          this.$router.push('/cms/customer-center/' + res.data.id);
         })
         .catch((err) => {
           this.createCustomerCenterButtonText = "Erstellen";
@@ -68,5 +67,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

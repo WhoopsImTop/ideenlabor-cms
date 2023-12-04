@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <defaultLayout>
     <h1>Serienrechnung erstellen</h1>
     <div class="bg-white p-4 rounded shadow my-2">
       <h3>Kundenangaben</h3>
@@ -126,11 +126,7 @@
                 @selectedService="setPositionData"
                 @setService="setService"
               ></serviceSearchComponent>
-              <input
-                v-else
-                type="text"
-                v-model="position.name"
-              />
+              <input v-else type="text" v-model="position.name" />
             </div>
             <div class="divTableCell" style="width: 10%">
               <input
@@ -297,10 +293,11 @@
         </button>
       </div>
     </div>
-  </div>
+  </defaultLayout>
 </template>
 
 <script>
+import defaultLayout from "../../layouts/defaultLayout.vue";
 import axios from "axios";
 import CustomerSearchComponent from "../../components/customerSearchComponent.vue";
 import serviceSearchComponent from "../../components/serviceSearchComponent.vue";
@@ -310,6 +307,7 @@ export default {
   components: {
     CustomerSearchComponent,
     serviceSearchComponent,
+    defaultLayout,
   },
   props: {},
   data() {

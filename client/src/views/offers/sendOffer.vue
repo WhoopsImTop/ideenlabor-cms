@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <defaultLayout>
     <div class="sendInvoiceGrid">
       <iframe
         :src="pdfSource"
@@ -44,10 +44,11 @@
         <p>{{ successResponse }}</p>
       </div>
     </div>
-  </div>
+  </defaultLayout>
 </template>
-  
-  <script>
+
+<script>
+import defaultLayout from "../../layouts/defaultLayout.vue";
 import axios from "axios";
 import VuePdfEmbed from "vue-pdf-embed";
 export default {
@@ -55,6 +56,7 @@ export default {
   props: {},
   components: {
     VuePdfEmbed,
+    defaultLayout,
   },
   data() {
     return {
@@ -77,20 +79,13 @@ Christian Bucher`,
       this.loadingBtn = true;
       this.loadingBtnText = "Versende Angebot...";
       //replace \n with <br> for html email
-      let invoiceMessage = this.invoiceEmailMessage.replace(
-        /\n/g,
-        "<br>"
-      );
+      let invoiceMessage = this.invoiceEmailMessage.replace(/\n/g, "<br>");
       axios
-        .post(
-          "/api/offers/send/" +
-            this.$route.params.offer_number,
-          {
-            email: this.invoiceEmail,
-            subject: "Angebot " + this.invoice.invoice_number,
-            message: invoiceMessage,
-          }
-        )
+        .post("/api/offers/send/" + this.$route.params.offer_number, {
+          email: this.invoiceEmail,
+          subject: "Angebot " + this.invoice.invoice_number,
+          message: invoiceMessage,
+        })
         .then((response) => {
           this.successResponse = response.data.message;
           this.loadingBtn = false;
@@ -111,10 +106,7 @@ Christian Bucher`,
   },
   created() {
     axios
-      .get(
-        "/api/offers/" +
-          this.$route.params.offer_number
-      )
+      .get("/api/offers/" + this.$route.params.offer_number)
       .then((response) => {
         this.invoice = response.data.data;
         this.invoiceEmail = this.invoice.customer.customer_email;
@@ -136,7 +128,7 @@ Christian Bucher`,
   },
 };
 </script>
-  
+
 <style>
 .sendInvoiceGrid {
   display: grid;

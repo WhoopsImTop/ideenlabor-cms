@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <defaultLayout>
     <h1>Übersicht</h1>
 
     <!-- create two col layout with inputs -->
@@ -132,12 +132,16 @@
     >
       Speichern
     </button>
-  </div>
+  </defaultLayout>
 </template>
 
 <script>
+import defaultLayout from "../../layouts/defaultLayout.vue";
 import axios from "axios";
 export default {
+  components: {
+    defaultLayout,
+  },
   data() {
     return {
       company: {
@@ -221,5 +225,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

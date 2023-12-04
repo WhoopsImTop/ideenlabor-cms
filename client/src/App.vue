@@ -1,12 +1,6 @@
 <template>
   <div>
-    <div v-if="token" class="grid grid-cols-6 gap-4 h-screen">
-      <sidebar></sidebar>
-      <router-view class="bg-gray-100 col-span-5 rounded-2xl p-8"></router-view>
-    </div>
-    <div v-else>
-      <router-view></router-view>
-    </div>
+    <router-view></router-view>
   </div>
 </template>
 <script>
@@ -26,13 +20,6 @@ export default {
     token: function (val) {
       this.token = val;
     },
-  },
-  created() {
-    if (localStorage.getItem("token")) {
-      this.$router.push("cms");
-    } else {
-      this.$router.push("cms/login");
-    }
   },
 };
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <div class="content-container full-height">
+  <div class="content-container full-height" @keyup.enter="login">
     <div class="login-container">
       <img
         class="login-logo-container"
@@ -49,7 +49,7 @@ export default {
         })
         .then((res) => {
           localStorage.setItem("token", res.data.token);
-          window.location.href = "/cms";
+          window.location.href = "/cms/";
         })
         .catch((err) => {
           this.errorMessage = "Email oder Passwort falsch!";

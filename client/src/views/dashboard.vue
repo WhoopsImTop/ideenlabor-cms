@@ -1,14 +1,28 @@
 <template>
-  <div>
+  <defaultLayout>
     <h1>Dashboard</h1>
     <div class="flex row">
       <div class="col p-5" style="border-right: 1px solid #dddddd">
         <h3>Brutto</h3>
-        <p>{{ new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(totalBrutto)}}</p>
+        <p>
+          {{
+            new Intl.NumberFormat("de-DE", {
+              style: "currency",
+              currency: "EUR",
+            }).format(totalBrutto)
+          }}
+        </p>
       </div>
       <div class="col p-5">
         <h3>Netto</h3>
-        <p>{{ new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format((totalBrutto / 119) * 100) }}</p>
+        <p>
+          {{
+            new Intl.NumberFormat("de-DE", {
+              style: "currency",
+              currency: "EUR",
+            }).format((totalBrutto / 119) * 100)
+          }}
+        </p>
       </div>
     </div>
     <!-- draw a graph with the income by month -->
@@ -16,10 +30,11 @@
       <h3>Umsatz nach Monat</h3>
       <Line :data="chartData" :options="chartOptions"></Line>
     </div>
-  </div>
+  </defaultLayout>
 </template>
 
 <script>
+import defaultLayout from "../layouts/defaultLayout.vue";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -29,8 +44,8 @@ import {
   Title,
   Tooltip,
   Legend,
-  Filler
-} from 'chart.js'
+  Filler,
+} from "chart.js";
 import { Line } from "vue-chartjs";
 import axios from "axios";
 
@@ -43,12 +58,13 @@ ChartJS.register(
   Tooltip,
   Legend,
   Filler
-)
+);
 
 export default {
   name: "dashboard",
   components: {
-    Line
+    Line,
+    defaultLayout,
   },
   data() {
     return {
@@ -113,18 +129,20 @@ export default {
               data: income.map((value) => {
                 return (value / 119) * 100;
               }),
-            }
+            },
           ],
         };
 
         //interpolate the chart to make lines smooth
         this.chartOptions = {
           scales: {
-            yAxes: [{
-              ticks: {
-                beginAtZero: true,
+            yAxes: [
+              {
+                ticks: {
+                  beginAtZero: true,
+                },
               },
-            }, ],
+            ],
           },
           elements: {
             line: {
@@ -148,5 +166,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

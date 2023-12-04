@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <defaultLayout>
     <div class="flex justify-between">
       <h1>Seiten</h1>
       <router-link
@@ -52,12 +52,16 @@
         </tr>
       </tbody>
     </table>
-  </div>
+  </defaultLayout>
 </template>
 
 <script>
+import defaultLayout from "../../layouts/defaultLayout.vue";
 import axios from "axios";
 export default {
+  components: {
+    defaultLayout,
+  },
   data() {
     return {
       pages: [],

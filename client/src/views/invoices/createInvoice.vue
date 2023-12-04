@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <defaultLayout>
     <h1>Rechnung erstellen</h1>
     <div class="bg-white p-4 rounded shadow my-2">
       <h3>Kundenangaben</h3>
@@ -340,10 +340,11 @@
         </button>
       </div>
     </div>
-  </div>
+  </defaultLayout>
 </template>
 
 <script>
+import defaultLayout from "../../layouts/defaultLayout.vue";
 import axios from "axios";
 import CustomerSearchComponent from "../../components/customerSearchComponent.vue";
 import serviceSearchComponent from "../../components/serviceSearchComponent.vue";
@@ -355,6 +356,7 @@ export default {
   components: {
     CustomerSearchComponent,
     serviceSearchComponent,
+    defaultLayout,
   },
   props: {},
   data() {
@@ -530,7 +532,7 @@ export default {
       } Tagen nach Rechnungsdatum (Zahlungsziel: ${this.calculatePaymentDate()})`;
     },
     generateCustomer() {
-      this.customer.customer_name = this.$refs.customerSelect.getData();
+      this.customer.customer_company_name = this.$refs.customerSelect.getData();
       let thus = this;
       return new Promise(function (resolve, reject) {
         axios

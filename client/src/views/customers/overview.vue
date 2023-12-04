@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <defaultLayout>
     <div class="flex justify-between">
       <h1>Kunden</h1>
 
@@ -58,7 +58,10 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="customer in filteredCustomers" :key="customer.customer_number">
+        <tr
+          v-for="customer in filteredCustomers"
+          :key="customer.customer_number"
+        >
           <td class="p-4">{{ customer.customer_number }}</td>
           <td>{{ customer.customer_company_name }}</td>
           <td>{{ customer.customer_name }}</td>
@@ -74,11 +77,12 @@
         </tr>
       </tbody>
     </table>
-  </div>
+  </defaultLayout>
 </template>
 
 <script>
 import axios from "axios";
+import defaultLayout from "../../layouts/defaultLayout.vue";
 import customerPopupVue from "../../components/customers/customerPopup.vue";
 export default {
   data() {
@@ -91,6 +95,7 @@ export default {
   },
   components: {
     customerPopupVue,
+    defaultLayout,
   },
   methods: {
     editCustomer(customer) {
@@ -141,5 +146,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

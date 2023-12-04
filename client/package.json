@@ -16,6 +16,8 @@
     "axios": "^1.4.0",
     "chart.js": "^4.4.0",
     "ckeditor-tailwind-reset": "^1.0.5",
+    "pdfjs-dist": "^4.0.189",
+    "pdfvuer": "1.9.2",
     "tinymce": "^5.10.7",
     "vue": "^3.2.47",
     "vue-chartjs": "^5.2.0",

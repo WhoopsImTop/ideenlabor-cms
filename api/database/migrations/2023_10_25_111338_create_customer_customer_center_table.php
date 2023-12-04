@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('customer_id')->constrained()->onDelete('cascade');
             $table->foreignId('customer_center_id')->constrained()->onDelete('cascade');
+            $table->text('colors')->nullable();
+            $table->string('logo')->nullable();
             $table->timestamps();
         });
     }

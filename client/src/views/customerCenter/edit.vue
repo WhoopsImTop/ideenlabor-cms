@@ -1,269 +1,359 @@
 <template>
-  <div v-if="currentCustomerCenter !== null">
-    <div
-      v-if="moveEntry"
-      class="absolute z-10 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 shadow-sm bg-white flex flex-col p-4 rounded-lg"
-    >
-      <div class="flex items-center justify-between">
-        <h2 class="font-bold text-lg">Verschieben</h2>
-        <div>
-          <img
-            src="../../assets/close.svg"
-            width="20"
-            alt="schließen"
-            @click="moveEntry = false"
-          />
+  <defaultLayout>
+    <div v-if="currentCustomerCenter !== null">
+      <div
+        v-if="moveEntry"
+        class="absolute z-10 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 shadow-sm bg-white flex flex-col p-4 rounded-lg"
+      >
+        <div class="flex items-center justify-between">
+          <h2 class="font-bold text-lg">Verschieben</h2>
+          <div>
+            <img
+              src="../../assets/close.svg"
+              width="20"
+              alt="schließen"
+              @click="moveEntry = false"
+            />
+          </div>
         </div>
-      </div>
-      <!-- list all folders to move in -->
-      <div class="mt-4">
-        <label class="block">
-          <span class="text-gray-700">Ordner</span>
-          <select
-            class="mt-1 block w-full rounded-md border-gray-300 border border-gray-500 outline-none focus:border-pink-600 focus:ring focus:ring-pink-200 focus:ring-opacity-50 py-2 px-3"
-            v-model="folderToMoveIn"
-          >
-            <option
-              v-for="folder in currentCustomerCenter.folders[0].folder_children"
-              :key="folder.id"
-              :value="folder.id"
+        <!-- list all folders to move in -->
+        <div class="mt-4">
+          <label class="block">
+            <span class="text-gray-700">Ordner</span>
+            <select
+              class="mt-1 block w-full rounded-md border-gray-300 border border-gray-500 outline-none focus:border-pink-600 focus:ring focus:ring-pink-200 focus:ring-opacity-50 py-2 px-3"
+              v-model="folderToMoveIn"
             >
-              {{ folder.folder_name }}
-            </option>
-          </select>
-        </label>
-      </div>
-      <div class="flex items-center justify-end">
-        <button
-          class="bg-pink-600 text-white rounded-full py-2 px-4 mt-4 mr-2"
-          @click="moveEntryToFolder()"
-        >
-          Verschieben
-        </button>
-        <button
-          class="bg-gray-100 text-gray-900 rounded-full py-2 px-4 mt-4"
-          @click="moveEntry = false"
-        >
-          Schließen
-        </button>
-      </div>
-    </div>
-
-    <div
-      v-if="createFolderModal"
-      class="absolute z-10 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 rounded shadow-sm bg-white flex flex-col p-4 rounded-lg"
-    >
-      <div class="flex items-center justify-between">
-        <h2 class="font-bold text-lg">Ordner Erstellen</h2>
-        <div>
-          <img
-            src="../../assets/close.svg"
-            width="20"
-            alt="schließen"
-            @click="closeFolderModal()"
-          />
+              <option
+                v-for="folder in currentCustomerCenter.folders[0]
+                  .folder_children"
+                :key="folder.id"
+                :value="folder.id"
+              >
+                {{ folder.folder_name }}
+              </option>
+            </select>
+          </label>
+        </div>
+        <div class="flex items-center justify-end">
+          <button
+            class="bg-pink-600 text-white rounded-full py-2 px-4 mt-4 mr-2"
+            @click="moveEntryToFolder()"
+          >
+            Verschieben
+          </button>
+          <button
+            class="bg-gray-100 text-gray-900 rounded-full py-2 px-4 mt-4"
+            @click="moveEntry = false"
+          >
+            Schließen
+          </button>
         </div>
       </div>
-      <div class="mt-4">
-        <label class="block">
-          <span class="text-gray-700">Ordnername</span>
-          <input
-            type="text"
-            class="mt-1 block w-full rounded-md border-gray-300 border border-gray-500 outline-none focus:border-pink-600 focus:ring focus:ring-pink-200 focus:ring-opacity-50 py-2 px-3"
-            placeholder="Ordnername"
-            v-model="newFolderName"
-          />
-        </label>
-        <label class="block mt-4">
-          <span class="text-gray-700">Ordner Beschreibung</span>
-        </label>
-        <ckeditor
-          :editor="editor"
-          v-model="newFolderDescription"
-          :config="editorConfig"
-        ></ckeditor>
+
+      <div
+        v-if="createFolderModal"
+        class="absolute z-10 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 rounded shadow-sm bg-white flex flex-col p-4 rounded-lg"
+      >
+        <div class="flex items-center justify-between">
+          <h2 class="font-bold text-lg">Ordner Erstellen</h2>
+          <div>
+            <img
+              src="../../assets/close.svg"
+              width="20"
+              alt="schließen"
+              @click="closeFolderModal()"
+            />
+          </div>
+        </div>
+        <div class="mt-4">
+          <label class="block">
+            <span class="text-gray-700">Ordnername</span>
+            <input
+              type="text"
+              class="mt-1 block w-full rounded-md border-gray-300 border border-gray-500 outline-none focus:border-pink-600 focus:ring focus:ring-pink-200 focus:ring-opacity-50 py-2 px-3"
+              placeholder="Ordnername"
+              v-model="newFolderName"
+            />
+          </label>
+          <label class="block mt-4">
+            <span class="text-gray-700">Ordner Beschreibung</span>
+          </label>
+          <ckeditor
+            :editor="editor"
+            v-model="newFolderDescription"
+            :config="editorConfig"
+          ></ckeditor>
+        </div>
+        <div class="flex items-center justify-end">
+          <button
+            class="bg-pink-600 text-white rounded-full py-2 px-4 mt-4 mr-2"
+            @click="CreateFolder()"
+          >
+            {{ editingFolder === null ? "Erstellen" : "Aktualisieren" }}
+          </button>
+          <button
+            class="bg-gray-100 text-gray-900 rounded-full py-2 px-4 mt-4"
+            @click="closeFolderModal()"
+          >
+            Schließen
+          </button>
+        </div>
       </div>
-      <div class="flex items-center justify-end">
-        <button
-          class="bg-pink-600 text-white rounded-full py-2 px-4 mt-4 mr-2"
-          @click="CreateFolder()"
-        >
-          {{ editingFolder === null ? "Erstellen" : "Aktualisieren" }}
-        </button>
-        <button
-          class="bg-gray-100 text-gray-900 rounded-full py-2 px-4 mt-4"
-          @click="closeFolderModal()"
-        >
-          Schließen
-        </button>
-      </div>
-    </div>
-    <div class="grid grid-cols-2 gap-4">
-      <div class="rounded bg-white p-2 shadow-sm mb-4">
-        <p>
-          <strong>Name:</strong>
-          {{
-            currentCustomerCenter.customer.customer_name != ""
-              ? currentCustomerCenter.customer.customer_name
-              : currentCustomerCenter.customer.customer_company_name
-          }}
-        </p>
-        <p>
-          <strong>Email:</strong>
-          {{ currentCustomerCenter.customer.customer_email }}
-        </p>
-        <p>
-          <strong>Kundennummer:</strong>
-          {{ currentCustomerCenter.customer.customer_number }}
-        </p>
-        <p>
-          <strong>PIN:</strong>
-          {{ currentCustomerCenter.customer.customer_pin || "" }}
-        </p>
-      </div>
-      <div class="rounded bg-white p-2 shadow-sm mb-4">
-        <dragAndDropUploaderVue
-          :acceptedFileTypes="['*']"
-          :id="currentCustomerCenter.id"
-          :customer_center_id="currentCustomerCenter.id"
-          @file-uploaded="PushFilesToCurrentFolder($event)"
-          :folderToUploadIn="currentFolder.id"
-          :folderToUploadInName="currentFolder.folder_name"
-        />
-      </div>
-    </div>
-    <div class="rounded bg-white p-2 shadow-sm">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center">
-          <h3 class="font-bold">Dateien</h3>
-          <div class="breadcrumb flex items-center">
-            <span
-              class="rounded-full py-1 px-3 text-sm font-bold bg-gray-50 border ml-2 hover:cursor-pointer"
-              :class="
-                breadCrumb.folder_hash === currentFolder.folder_hash
-                  ? 'border border-pink-600 bg-pink-100'
-                  : ''
-              "
-              v-for="breadCrumb in FolderBreadCrumb"
-              :key="breadCrumb.id"
-              @click="fetchFolder(breadCrumb.folder_hash)"
-              >{{ breadCrumb.folder_name }}</span
+      <div class="grid grid-cols-2 gap-4">
+        <div class="rounded bg-white p-2 shadow-sm mb-4">
+          <p>
+            <strong>Name:</strong>
+            {{
+              currentCustomerCenter.customer.customer_name != ""
+                ? currentCustomerCenter.customer.customer_name
+                : currentCustomerCenter.customer.customer_company_name
+            }}
+          </p>
+          <p>
+            <strong>Email:</strong>
+            {{ currentCustomerCenter.customer.customer_email }}
+          </p>
+          <p>
+            <strong>Kundennummer:</strong>
+            {{ currentCustomerCenter.customer.customer_number }}
+          </p>
+          <p>
+            <strong>PIN:</strong>
+            {{ currentCustomerCenter.customer.customer_pin || "" }}
+          </p>
+
+          <h3 class="text-lg font-bold mt-3 mb-1">Applikationen</h3>
+          <div class="flex flex-col">
+            <label
+              class="px-3 py-2 bg-pink-50 hover:bg-pink-100 hover:cursor-pointer rounded-lg w-20"
+              for="drive"
+              ><input
+                type="checkbox"
+                id="drive"
+                name="drive"
+                value="drive"
+                class="accent-pink-600"
+              />
+              Drive</label
+            >
+            <label
+              class="px-3 py-2 bg-pink-50 hover:bg-pink-100 hover:cursor-pointer rounded-lg mt-1 w-20"
+              for="mail"
+              ><input
+                type="checkbox"
+                id="mail"
+                name="mail"
+                value="mail"
+                class="accent-pink-600"
+              />
+              Mail</label
             >
           </div>
         </div>
-        <a
-          class="flex items-center bg-gray-50 rounded py-2 px-4 hover:cursor-pointer"
-          @click="addFolder()"
-          ><img
-            src="../../assets/folder.svg"
-            width="20"
-            class="mr-2"
-            alt="folder"
+        <div class="rounded bg-white p-2 shadow-sm mb-4">
+          <dragAndDropUploaderVue
+            :acceptedFileTypes="['*']"
+            :id="currentCustomerCenter.id"
+            :customer_center_id="currentCustomerCenter.id"
+            @file-uploaded="PushFilesToCurrentFolder($event)"
+            :folderToUploadIn="currentFolder.id"
+            :folderToUploadInName="currentFolder.folder_name"
           />
-          Ordner hinzufügen</a
-        >
+        </div>
       </div>
-      <table class="w-full mt-2">
-        <thead class="bg-gray-50 rounded shadow-sm">
-          <th class="text-left text-sm font-normal px-2 py-2">Dateiname</th>
-          <th class="text-left text-sm font-normal px-2 py-2">Größe</th>
-          <th class="text-left text-sm font-normal px-2 py-2">Erstellt am</th>
-          <th class="text-right text-sm font-normal px-2 py-2">Aktionen</th>
-        </thead>
-        <tbody>
-          <tr
-            v-for="folder in currentFolder.folder_children"
-            :key="folder.id"
-            class="hover:bg-gray-100 hover:cursor-pointer"
-          >
-            <td
-              class="text-sm font-normal py-2 px-2"
-              @click="fetchFolder(folder.folder_hash)"
+
+      <div class="rounded bg-white p-2 shadow-sm mb-4">
+        <h3 class="font-bold">Farben</h3>
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <div
+              v-for="color in currentCustomerCenter.colors"
+              :key="color.id"
+              class="flex items-center relative group"
             >
-              <p class="flex items-center">
-                <img
-                  src="./../../assets/folder.svg"
-                  width="20"
-                  alt="folder"
-                  class="mr-2"
-                />
-                {{ folder.folder_name }}
-              </p>
-            </td>
-            <td class="text-sm font-normal py-2 px-2"></td>
-            <td class="text-sm font-normal py-2 px-2">
-              {{ new Date(folder.created_at).toLocaleString("de-DE") }}
-            </td>
-            <td>
-              <div class="flex items-center justify-end py-2 px-2">
-                <a @click="editFolder(folder.id)" class="mx-1">
-                  <img src="./../../assets/edit.svg" width="18" alt="folder" />
-                </a>
-                <a @click="moveFolder(folder.id)" class="mx-1">
+              <div
+                class="hidden group-hover:block hover:cursor-pointer bg-white absolute right-3 rounded-full p-1"
+                @click="deleteColor(color)"
+              >
+                <img src="../../assets/delete.svg" width="15" alt="duplicate" />
+              </div>
+              <div
+                class="w-8 h-8 rounded-full mr-2"
+                :style="{ backgroundColor: color.color_hex }"
+              ></div>
+            </div>
+          </div>
+          <div class="flex items-center">
+            <input
+              type="text"
+              v-model="newColor"
+              class="border border-gray-100 rounded focus:border-pink-600 outline-none py-2 px-2 mr-3"
+            />
+            <button
+              class="bg-pink-600 text-white rounded-full p-2"
+              @click="addColor()"
+            >
+              <img src="../../assets/add.svg" width="20" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded bg-white p-2 shadow-sm">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <h3 class="font-bold">Dateien</h3>
+            <div class="breadcrumb flex items-center">
+              <span
+                class="rounded-full py-1 px-3 text-sm font-bold bg-gray-50 border ml-2 hover:cursor-pointer"
+                :class="
+                  breadCrumb.folder_hash === currentFolder.folder_hash
+                    ? 'border border-pink-600 bg-pink-100'
+                    : ''
+                "
+                v-for="breadCrumb in FolderBreadCrumb"
+                :key="breadCrumb.id"
+                @click="fetchFolder(breadCrumb.folder_hash)"
+                >{{ breadCrumb.folder_name }}</span
+              >
+            </div>
+          </div>
+          <a
+            class="flex items-center bg-gray-50 rounded py-2 px-4 hover:cursor-pointer"
+            @click="addFolder()"
+            ><img
+              src="../../assets/folder.svg"
+              width="20"
+              class="mr-2"
+              alt="folder"
+            />
+            Ordner hinzufügen</a
+          >
+        </div>
+        <table class="w-full mt-2">
+          <thead class="bg-gray-50 rounded shadow-sm">
+            <th class="text-left text-sm font-normal px-2 py-2">Dateiname</th>
+            <th class="text-left text-sm font-normal px-2 py-2">Größe</th>
+            <th class="text-left text-sm font-normal px-2 py-2">Erstellt am</th>
+            <th class="text-right text-sm font-normal px-2 py-2">Aktionen</th>
+          </thead>
+          <tbody>
+            <tr
+              v-for="folder in currentFolder.folder_children"
+              :key="folder.id"
+              class="hover:bg-gray-100 hover:cursor-pointer"
+            >
+              <td
+                class="text-sm font-normal py-2 px-2"
+                @click="fetchFolder(folder.folder_hash)"
+              >
+                <p class="flex items-center">
                   <img
-                    src="./../../assets/move_folder.svg"
+                    src="./../../assets/folder.svg"
                     width="20"
                     alt="folder"
+                    class="mr-2"
                   />
-                </a>
-                <a @click="deleteFolder(folder.folder_hash)" class="mx-1"
-                  ><img src="./../../assets/delete.svg" width="20"
-                /></a>
-              </div>
-            </td>
-          </tr>
-          <tr
-            v-for="file in currentFolder.uploads"
-            :key="file.id"
-            class="hover:bg-gray-100"
-          >
-            <td class="text-sm font-normal py-2 px-2">
-              <p class="flex items-center">
-                <img
-                  src="./../../assets/file.svg"
-                  width="20"
-                  alt="folder"
-                  class="mr-2"
-                />
-                {{ file.file_name }}
-              </p>
-            </td>
-            <td class="text-sm font-normal py-2 px-2">
-              {{ calculateFileSize(file.file_size) }}
-            </td>
-            <td class="text-sm font-normal py-2 px-2">
-              {{ new Date(file.created_at).toLocaleString("de-DE") }}
-            </td>
-            <td>
-              <div class="flex items-center justify-end py-2 px-2">
-                <a @click="moveFile(file.id)" class="mx-1">
+                  {{ folder.folder_name }}
+                </p>
+              </td>
+              <td class="text-sm font-normal py-2 px-2"></td>
+              <td class="text-sm font-normal py-2 px-2">
+                {{ new Date(folder.created_at).toLocaleString("de-DE") }}
+              </td>
+              <td>
+                <div class="flex items-center justify-end py-2 px-2">
+                  <a @click="editFolder(folder.id)" class="mx-1">
+                    <img
+                      src="./../../assets/edit.svg"
+                      width="18"
+                      alt="folder"
+                    />
+                  </a>
+                  <a @click="moveFolder(folder.id)" class="mx-1">
+                    <img
+                      src="./../../assets/move_folder.svg"
+                      width="20"
+                      alt="folder"
+                    />
+                  </a>
+                  <a @click="deleteFolder(folder.folder_hash)" class="mx-1"
+                    ><img src="./../../assets/delete.svg" width="20"
+                  /></a>
+                </div>
+              </td>
+            </tr>
+            <tr
+              v-for="file in currentFolder.uploads"
+              :key="file.id"
+              class="hover:bg-gray-100"
+            >
+              <td class="text-sm font-normal py-2 px-2">
+                <p class="flex items-center">
                   <img
-                    src="./../../assets/move_folder.svg"
+                    src="./../../assets/file.svg"
                     width="20"
-                    alt="file"
+                    alt="folder"
+                    class="mr-2"
                   />
-                </a>
-                <a @click="deleteFile(file.id)" class="mx-1"
-                  ><img src="./../../assets/delete.svg" width="20"
-                /></a>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+                  {{ file.file_name }}
+                </p>
+              </td>
+              <td class="text-sm font-normal py-2 px-2">
+                {{ calculateFileSize(file.file_size) }}
+              </td>
+              <td class="text-sm font-normal py-2 px-2">
+                {{ new Date(file.created_at).toLocaleString("de-DE") }}
+              </td>
+              <td>
+                <div class="flex items-center justify-end py-2 px-2">
+                  <a @click="moveFile(file.id)" class="mx-1">
+                    <img
+                      src="./../../assets/move_folder.svg"
+                      width="20"
+                      alt="file"
+                    />
+                  </a>
+                  <a @click="deleteFile(file.id)" class="mx-1"
+                    ><img src="./../../assets/delete.svg" width="20"
+                  /></a>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="rounded bg-white p-2 shadow-sm mt-4">
+        <h3 class="font-bold">Kundencenter löschen</h3>
+        <p>
+          Wenn Sie das Kundencenter löschen, werden alle Dateien und Ordner
+          gelöscht.
+        </p>
+        <button
+          class="bg-pink-100 text-black rounded-full py-2 px-4 mt-4 flex items-center"
+          @click="deleteCustomerCenter()"
+        >
+          <img src="../../assets/delete.svg" width="20" class="mr-2" />
+          Kundencenter löschen
+        </button>
+      </div>
     </div>
-  </div>
+  </defaultLayout>
 </template>
 
 <script>
+import defaultLayout from "../../layouts/defaultLayout.vue";
 import axios from "axios";
 import dragAndDropUploaderVue from "../../components/dragAndDropUploader.vue";
 
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import router from "../../router";
 
 export default {
   components: {
     dragAndDropUploaderVue,
+    defaultLayout,
   },
   data() {
     return {
@@ -296,9 +386,65 @@ export default {
           "redo",
         ],
       },
+      newColor: "#",
     };
   },
   methods: {
+    deleteCustomerCenter() {
+      if (
+        !confirm(
+          "Sind Sie sicher, dass Sie das Kundencenter löschen möchten? Alle Dateien und Ordner werden gelöscht."
+        )
+      ) {
+        return;
+      }
+      axios
+        .delete("/api/customerCenters/" + this.currentCustomerCenter.id)
+        .then((response) => {
+          this.$router.push("/cms/customer-center");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    deleteColor(color) {
+      this.currentCustomerCenter.colors =
+        this.currentCustomerCenter.colors.filter(
+          (colorHex) => colorHex !== color
+        );
+      axios
+        .put("/api/customerCenters/" + this.currentCustomerCenter.id, {
+          colors: JSON.stringify(this.currentCustomerCenter.colors),
+        })
+        .then((response) => {})
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    addColor() {
+      //check if new color is already in array and contains # and has only 7 characters
+      if (
+        this.currentCustomerCenter.colors.includes(this.newColor) ||
+        !this.newColor.includes("#") ||
+        this.newColor.length !== 7
+      ) {
+        return;
+      }
+      this.currentCustomerCenter.colors.push({
+        color_hex: this.newColor,
+      });
+
+      axios
+        .put("/api/customerCenters/" + this.currentCustomerCenter.id, {
+          colors: JSON.stringify(this.currentCustomerCenter.colors),
+        })
+        .then((response) => {
+          this.newColor = "#";
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
     moveEntryToFolder() {
       //find folder_name of folderToMoveIn
       this.folderToMoveInName =
@@ -483,8 +629,12 @@ export default {
     axios
       .get("/api/customerCenters/" + this.$route.params.id)
       .then((response) => {
+        response.data.data.colors = JSON.parse(response.data.data.colors) || [];
         this.currentCustomerCenter = response.data.data;
         this.currentFolder = response.data.data.folders[0];
+      })
+      .catch((error) => {
+        router.push("/cms/customer-center");
       });
   },
 };

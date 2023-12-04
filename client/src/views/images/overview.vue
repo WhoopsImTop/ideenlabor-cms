@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <defaultLayout>
     <h1>Medien</h1>
     <div class="editImagePopUp rounded" v-if="imagePopUp">
       <div class="grid grid-cols-2 gap-16 p-6">
@@ -41,12 +41,16 @@
         <img :src="'/api/public' + image.src" width="100" />
       </div>
     </div>
-  </div>
+  </defaultLayout>
 </template>
 
 <script>
+import defaultLayout from "../../layouts/defaultLayout.vue";
 import axios from "axios";
 export default {
+  components: {
+    defaultLayout,
+  },
   data() {
     return {
       images: [],

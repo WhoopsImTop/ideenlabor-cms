@@ -38,8 +38,9 @@ class UploadController extends Controller
             //get uploaded file and extract its properties
             $file = $request->file('file');
             $file_name = $file->getClientOriginalName();
-            //save with original file name to public folder 
-            $file_path = $file->storeAs('public/files', $file_name);
+            $file->storeAs('public/files', $file_name);
+            $url = asset('storage/files/' . $file_name);
+            $file_path = $url;
             $file_size = $file->getSize();
             $file_type = $file->getMimeType();
 
@@ -61,7 +62,6 @@ class UploadController extends Controller
                 'success' => true,
                 'data' => $upload->toArray()
             ], 200);
-            
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,

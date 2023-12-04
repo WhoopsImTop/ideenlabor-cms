@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <defaultLayout>
     <h1>Serienrechnung bearbeiten</h1>
     <div class="bg-white p-4 rounded shadow my-2">
       <h3>Kundenangaben</h3>
@@ -293,10 +293,11 @@
         </button>
       </div>
     </div>
-  </div>
+  </defaultLayout>
 </template>
 
 <script>
+import defaultLayout from "../../layouts/defaultLayout.vue";
 import axios from "axios";
 import CustomerSearchComponent from "../../components/customerSearchComponent.vue";
 import serviceSearchComponent from "../../components/serviceSearchComponent.vue";
@@ -306,6 +307,7 @@ export default {
   components: {
     CustomerSearchComponent,
     serviceSearchComponent,
+    defaultLayout,
   },
   props: {},
   data() {
@@ -583,10 +585,7 @@ export default {
   },
   async created() {
     await axios
-      .get(
-        "/api/recurringInvoices/" +
-          this.$route.params.id
-      )
+      .get("/api/recurringInvoices/" + this.$route.params.id)
       .then((res) => {
         this.invoice = res.data.data;
         this.invoice.invoice_positions = JSON.parse(

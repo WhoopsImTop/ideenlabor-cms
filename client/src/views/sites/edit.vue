@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <defaultLayout>
     <h1>Seite erstellen</h1>
     <div class="bg-white p-4 rounded shadow my-2">
       <div class="grid grid-cols-3 gap-16 py-4">
@@ -73,10 +73,11 @@
         </div>
       </div>
     </div>
-  </div>
+  </defaultLayout>
 </template>
-  
-  <script>
+
+<script>
+import defaultLayout from "../../layouts/defaultLayout.vue";
 import axios from "axios";
 import builderComponentRenderer from "../../components/builderComponentRenderer.vue";
 export default {
@@ -117,6 +118,7 @@ export default {
   },
   components: {
     builderComponentRenderer,
+    defaultLayout,
   },
   methods: {
     updatePageContent(pageContent) {
@@ -127,10 +129,7 @@ export default {
     savePageData() {
       this.saveButtonText = "Speichern...";
       axios
-        .patch(
-          "/api/sites/" + this.site.id,
-          this.site
-        )
+        .patch("/api/sites/" + this.site.id, this.site)
         .then((response) => {
           this.saveButtonText = "Aktualisiert";
           setTimeout(() => {
@@ -162,6 +161,5 @@ export default {
   },
 };
 </script>
-  
-  <style>
-</style>
+
+<style></style>

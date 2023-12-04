@@ -40,6 +40,11 @@ class Customer extends Model
 
     public function customer_center()
     {
-        return $this->hasOne(CustomerCenter::class)->with('uploads');
+        return $this->hasOne(CustomerCenter::class, 'customer_id', 'id')->with('folders');
+    }
+
+    public function recurring_invoices()
+    {
+        return $this->hasMany(RecurringInvoice::class, 'customer_number', 'customer_number');
     }
 }

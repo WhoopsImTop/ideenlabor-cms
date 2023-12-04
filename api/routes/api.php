@@ -54,3 +54,7 @@ Route::apiResource('uploads', UploadController::class);
 Route::apiResource('customerCenters', CustomerCenterController::class);
 Route::apiResource('applications', ApplicationController::class);
 Route::apiResource('folders', FolderController::class);
+
+Route::post('customerCenter/updateCustomerInformation/{id}', [CustomerCenterController::class, 'updateCustomerInformation']);
+Route::post('customerCenter/login', [CustomerCenterController::class, 'customerLogin']);
+Route::post('customerCenter/validatePassword/{id}', [CustomerCenterController::class, 'validateCustomerPassword']);

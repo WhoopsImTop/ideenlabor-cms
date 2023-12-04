@@ -84,7 +84,7 @@ export default {
       kundenCenter: [
         {
           name: "Alle Kundencenter",
-          link: "/cms/customer-center",
+          link: "/cms/customer-center/overview",
         },
       ],
     };

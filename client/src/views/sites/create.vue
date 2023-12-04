@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <defaultLayout>
     <h1>Seite erstellen</h1>
     <div class="bg-white p-4 rounded shadow my-2">
       <div class="grid grid-cols-3 gap-16 py-4">
@@ -63,10 +63,12 @@
         </button>
       </div>
     </div>
-  </div>
+  </defaultLayout>
 </template>
 
 <script>
+import defaultLayout from "../../layouts/defaultLayout.vue";
+
 import axios from "axios";
 import builderComponentRenderer from "../../components/builderComponentRenderer.vue";
 export default {
@@ -106,6 +108,7 @@ export default {
   },
   components: {
     builderComponentRenderer,
+    defaultLayout,
   },
   methods: {
     updatePageContent(pageContent) {
@@ -131,5 +134,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

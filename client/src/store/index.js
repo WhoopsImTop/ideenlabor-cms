@@ -24,5 +24,9 @@ export default createStore({
         ],
       },
     },
+    customerCenter: {
+      loggedIn: false,
+      data: {},
+    },
   },
 });

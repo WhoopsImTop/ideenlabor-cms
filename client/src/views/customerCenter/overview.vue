@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <defaultLayout>
     <div class="flex justify-between">
       <h1>Kundencenter</h1>
       <input
@@ -58,7 +58,7 @@
                 class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-black"
               >
                 {{
-                  new Date(customerCenter.created_at).toLocaleString('de-DE')
+                  new Date(customerCenter.created_at).toLocaleString("de-DE")
                 }}
               </td>
             </tr>
@@ -66,13 +66,17 @@
         </table>
       </div>
     </div>
-  </div>
+  </defaultLayout>
 </template>
 
 <script>
+import defaultLayout from "../../layouts/defaultLayout.vue";
 import axios from "axios";
 export default {
   name: "invoices",
+  components: {
+    defaultLayout,
+  },
   data() {
     return {
       tableActions: false,
@@ -119,15 +123,7 @@ export default {
   },
   computed: {
     filteredInvoices() {
-      return this.tableCustomerCenterData
-        .filter((customerCenter) => {
-          return (
-            customerCenter.customer.customer_name
-              .toLowerCase()
-              .includes(this.searchCustomerCenter.toLowerCase())
-          );
-        })
-        .reverse();
+      return this.tableCustomerCenterData.reverse();
     },
   },
   created() {

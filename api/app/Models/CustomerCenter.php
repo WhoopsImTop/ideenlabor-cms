@@ -14,6 +14,8 @@ class CustomerCenter extends Model
     protected $fillable = [
         'id',
         'customer_id',
+        'colors',
+        'logo',
     ];
 
     public function customer()

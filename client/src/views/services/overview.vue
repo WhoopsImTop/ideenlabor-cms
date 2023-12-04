@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <defaultLayout>
     <div class="flex justify-between">
       <h1>Alle Leistungen</h1>
       <button
@@ -74,10 +74,11 @@
         </tr>
       </tbody>
     </table>
-  </div>
+  </defaultLayout>
 </template>
 
 <script>
+import defaultLayout from "../../layouts/defaultLayout.vue";
 import servicePopup from "../../components/services/servicePopup.vue";
 import axios from "axios";
 export default {
@@ -90,6 +91,7 @@ export default {
   },
   components: {
     servicePopup,
+    defaultLayout,
   },
   created() {
     this.getServices();
@@ -126,5 +128,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <defaultLayout>
     <div class="flex justify-between">
       <h1>Rechnungen</h1>
       <input
@@ -194,13 +194,17 @@
         </div>
       </div>
     </div>
-  </div>
+  </defaultLayout>
 </template>
 
 <script>
+import defaultLayout from "../../layouts/defaultLayout.vue";
 import axios from "axios";
 export default {
   name: "invoices",
+  components: {
+    defaultLayout,
+  },
   data() {
     return {
       tableActions: false,
